@@ -62,16 +62,18 @@ Only feasible portfolios enter the cost comparison. The relative gap is
 | QAOA p=1 | Local ideal Aer + seeded sampling | 4,096 shots after training | -0.028117 | 2.22% |
 | QAOA p=2 | Local ideal Aer + seeded sampling | 4,096 shots after training | -0.028432 | 1.13% |
 | QAOA p=3 | Local ideal Aer + seeded sampling | 4,096 shots after training | -0.026374 | 8.28% |
+| QAOA p=1 | Qollab → IonQ Forte 1 noise-model simulator | 4,096 shots; frozen local angles | -0.027485 | ≈4.42% |
 | QAOA p=2 | Qollab → IonQ Forte 1 noise-model simulator | 4,096 shots; frozen local angles | -0.028117 | ≈2.22% |
+| QAOA p=3 | Qollab → IonQ Forte 1 noise-model simulator | 4,096 shots; frozen local angles | -0.026171 | ≈8.99% |
 
-The IonQ cost was printed to six decimal places; its gap is therefore
-approximate. It is a **remote simulation result, not a quantum hardware run**.
+The IonQ costs were printed to six decimal places; their gaps are therefore
+approximate. These are **remote simulation results, not quantum hardware runs**.
 The selected backend's advertised capacity was 29 qubits; our circuit used
 20 qubits, not 29.
 
 The optimum is **SPY, QQQ, DIA, XLK, BTC-USD**, with 20% invested in each.
 Several inexpensive classical methods reach it. Random feasible sampling
-beats all three local QAOA depths and the reported remote run in these
+beats all three local QAOA depths and all three reported remote runs in these
 single-seed/single-run comparisons. No speedup or quantum advantage is claimed.
 The earlier claim of beating rounding used inconsistent capital scaling and
 included infeasible samples; it is withdrawn.
@@ -87,17 +89,23 @@ rates come from 4,096 sampled outcomes. These are different quantities.
 | Local p=1 | 33.8% | 34.3% | 41 | 190 | 441 | 205.4 s | — |
 | Local p=2 | 18.9% | 20.3% | 63 | 380 | 600 | 478.1 s | — |
 | Local p=3 | 3.1% | 3.2% | 85 | 570 | 600 | 604.7 s | — |
+| IonQ Forte 1 simulator p=1 | 33.8% ideal reference only | 16.3% | 41 | 190 | Reused local p=1 angles | No retraining on Qollab | 92.0 s |
 | IonQ Forte 1 simulator p=2 | 18.9% reference; not a remote probability estimate | 5.4% | 63 | 380 | Reused local p=2 angles | No retraining on Qollab | 155.0 s |
+| IonQ Forte 1 simulator p=3 | 3.1% ideal reference only | 2.0% | 85 | 570 | Reused local p=3 angles | No retraining on Qollab | 224.0 s |
 
-The remote p=2 run retained substantially fewer valid portfolios than the
-local ideal run: 5.4% versus 20.3% observed. IonQ's remote simulator applies
-a device noise model, whereas the local reference is ideal. This single run
+Each remote run retained fewer valid portfolios than its local ideal
+counterpart: 16.3% versus 34.3% at p=1, 5.4% versus 20.3% at p=2, and 2.0%
+versus 3.2% at p=3. The remote p=2 run had the best sampled objective, while
+p=1 was fastest and had the highest feasible rate. Increasing depth did not
+monotonically improve solution quality. IonQ's remote simulator applies
+a device noise model, whereas the local reference is ideal. One run per depth
 does not isolate the effects of noise, compilation and sampling. Raw counts
 and backend characterization were not supplied with the pasted output.
 
-The 155.0 s value is Qollab's reported circuit execution time (155,000 ms),
+The 92.0, 155.0 and 224.0 s values are Qollab's reported circuit execution
+times (92,000, 155,000 and 224,000 ms for p=1, p=2 and p=3),
 not total elapsed time including package loading, initialization or queueing.
-It also excludes the 478.1 s of local angle training. Classical enumeration
+They also exclude the corresponding local angle training. Classical enumeration
 took approximately 0.59 s; greedy objective scoring took approximately
 0.40 ms in the saved local benchmark. These are different computations and
 indicative timings, not a controlled cross-platform runtime comparison.
@@ -113,12 +121,26 @@ expectation evaluation or a shot.
 | Local QAOA p=1 | QQQ, DIA, XLK, XLU, BTC-USD | -0.028117 |
 | Local QAOA p=2 | SPY, QQQ, XLK, XLF, BTC-USD | -0.028432 |
 | Local QAOA p=3 | SPY, XLK, XLV, EEM, BTC-USD | -0.026374 |
+| IonQ Forte 1 simulator QAOA p=1 | QQQ, XLK, XLI, TLT, BTC-USD | -0.027485 |
 | IonQ Forte 1 simulator QAOA p=2 | QQQ, DIA, XLK, XLU, BTC-USD | -0.028117 |
+| IonQ Forte 1 simulator QAOA p=3 | SPY, QQQ, IWM, EEM, BTC-USD | -0.026171 |
 
 The remote p=2 winner happens to equal the local p=1 winner; those are separate
 runs of different trained circuits, not duplicated measurements.
 
-### Top five feasible portfolios from the reported IonQ run
+### Top five feasible portfolios from each reported IonQ run
+
+**p=1 — 4,096 shots, 92.0 s reported execution time**
+
+| Rank | Selected assets | Objective cost | Observed shots |
+| --- | --- | ---: | ---: |
+| 1 | QQQ, XLK, XLI, TLT, BTC-USD | -0.027485 | 1 |
+| 2 | QQQ, XLK, XLF, HYG, BTC-USD | -0.027214 | 1 |
+| 3 | QQQ, XLK, XLP, LQD, BTC-USD | -0.027075 | 1 |
+| 4 | SPY, QQQ, XLF, XLV, BTC-USD | -0.026536 | 1 |
+| 5 | SPY, DIA, XLK, LQD, BTC-USD | -0.026354 | 1 |
+
+**p=2 — 4,096 shots, 155.0 s reported execution time**
 
 | Rank | Selected assets | Objective cost | Observed shots |
 | --- | --- | ---: | ---: |
@@ -128,8 +150,18 @@ runs of different trained circuits, not duplicated measurements.
 | 4 | QQQ, XLK, XLU, TLT, BTC-USD | -0.027088 | 1 |
 | 5 | QQQ, XLK, LQD, EEM, BTC-USD | -0.026864 | 1 |
 
+**p=3 — 4,096 shots, 224.0 s reported execution time**
+
+| Rank | Selected assets | Objective cost | Observed shots |
+| --- | --- | ---: | ---: |
+| 1 | SPY, QQQ, IWM, EEM, BTC-USD | -0.026171 | 1 |
+| 2 | QQQ, IWM, XLF, EEM, BTC-USD | -0.025734 | 1 |
+| 3 | QQQ, XLI, XLP, GLD, BTC-USD | -0.025510 | 1 |
+| 4 | QQQ, XLI, LQD, GLD, BTC-USD | -0.024974 | 1 |
+| 5 | SPY, IWM, XLF, XLV, BTC-USD | -0.024922 | 1 |
+
 These are ranked by objective cost, not sampling frequency. Each appeared
-once, so the table does not establish stable portfolio-selection probabilities.
+once, so the tables do not establish stable portfolio-selection probabilities.
 
 ### Retrospective held-out backtest: 2023–2024
 
@@ -146,9 +178,11 @@ drawdown is measured at monthly observation points.
 | Local QAOA p=2 | 126.01% | 18.84% | -6.69% | 1.940 |
 | Local QAOA p=3 | 91.26% | 17.57% | -6.90% | 1.991 |
 
-No separate remote backtest was run. The reported remote winner is identical
-to the local p=1 portfolio, so the existing p=1 backtest describes that same
-allocation—not an independently measured IonQ investment result.
+No separate remote backtests were run. The remote p=2 winner is identical
+to the local p=1 portfolio, so the existing local p=1 backtest describes that
+same allocation—not an independently measured IonQ investment result.
+The remote p=1 and p=3 winners differ from the local winners and have not
+been backtested in the saved results.
 The local p=2 portfolio's higher realized return does not establish quantum
 advantage: this is one exploratory historical split and one sampling seed.
 These results are not investment advice.
@@ -161,7 +195,7 @@ These results are not investment advice.
   costs and seeded local sampling results. It does **not** contain IonQ counts.
 - `data/backtest.json`: retrospective portfolio-performance calculations.
 - IonQ Forte 1 simulator rows: participant-provided Qollab output from the
-  successful p=2, 4,096-shot run. The display identified the backend as
+  successful p=1, p=2 and p=3 runs, each with 4,096 shots. The display identified the backend as
   `ionq_simulator`; the participant identified the selected option as Forte 1.
 
 ## Qollab execution
@@ -171,9 +205,10 @@ install this project or run uv. Runtime imports use the source tree; training
 and data dependencies load only in local workflows. `main.py` submits one
 frozen circuit as one job and never trains on the selected backend.
 
-A participant successfully ran the p=2 demo on Qollab's IonQ Forte 1 simulator
-with 4,096 shots; its results are included above. This verifies that reported
-configuration, not every backend or circuit depth. After publishing the final
+A participant successfully ran the p=1, p=2 and p=3 demos on Qollab's IonQ
+Forte 1 simulator with 4,096 shots each; their results are included above.
+This verifies those reported configurations, not every backend or setting.
+After publishing the final
 version, verify it again from another account or a logged-out browser.
 
 ## Documentation and rights
