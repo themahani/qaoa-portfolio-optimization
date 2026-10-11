@@ -1,0 +1,14 @@
+{
+  "source": "Participant-provided Qollab console output",
+  "backend_selection": "IonQ Forte 1 noise-model simulator",
+  "backend_display": "ionq_simulator",
+  "capacity_qubits": 29,
+  "used_qubits": 20,
+  "shots_per_run": 4096,
+  "runs": [
+    {"layers": 1, "best_feasible_cost": -0.027485, "observed_feasible_rate": 0.163, "execution_seconds": 92, "circuit_depth": 41, "rzz_gates": 190},
+    {"layers": 2, "best_feasible_cost": -0.028117, "observed_feasible_rate": 0.054, "execution_seconds": 155, "circuit_depth": 63, "rzz_gates": 380},
+    {"layers": 3, "best_feasible_cost": -0.026171, "observed_feasible_rate": 0.020, "execution_seconds": 224, "circuit_depth": 85, "rzz_gates": 570}
+  ],
+  "limitations": "One run per depth; costs and rates rounded as printed; no raw counts; execution time excludes local training, loading and queueing."
+}

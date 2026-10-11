@@ -1,0 +1,1 @@
+Percentage gaps to the exact optimum: classical methods 0%, random feasible sampling 0.92%; local QAOA p=1,2,3: 2.22%,1.13%,8.28%; Forte simulator: 4.42%,2.22%,8.99%. Lower is better; all sampled costs are feasible.

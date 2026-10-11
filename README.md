@@ -60,6 +60,16 @@ O(pN²2^N) per-evaluation upper bound. QAOA has no established speedup here.
 See the [resource analysis](docs/resource_analysis.md) for the decomposition,
 training costs and reproducible scaling check.
 
+![Resource and work scaling: one qubit per asset, quadratic dense gate counts checked by transpilation, exponential exact-simulation work, and feasible selection counts as portfolio size changes.](docs/figures/complexity_scaling.png)
+
+The left panel checks the gate formula against transpilation. The middle
+compares growth functions, each normalized to its own value at N=5—not
+seconds or equal-cost operations. The right shows why k matters: with twenty
+assets there are 15,504 five-asset portfolios, but 184,756 ten-asset portfolios.
+At fixed p, our dense gate count does not change with k; the penalty angles,
+feasibility and optimization difficulty can. Fixed-k enumeration is polynomial
+in N, so these curves do not establish a quantum speedup.
+
 ## What we measured
 
 All methods use the same 2015–2020 estimates and equal investment weights.
@@ -80,6 +90,19 @@ Remote times exclude loading, queueing and local training. These are
 a simulator with a 29-qubit capacity. One run per setting does not establish
 a statistical advantage. [Full results and backtest](docs/results.md).
 
+![Best feasible objective gaps: classical optimum 0%, random sampling 0.92%; local QAOA gaps 2.22%, 1.13%, 8.28% and Forte simulator gaps 4.42%, 2.22%, 8.99% at depths one, two and three.](docs/figures/solution_quality.png)
+
+Depth two found the best quantum candidate in both environments, but even
+random feasible sampling achieved a smaller gap in this experiment. The
+figure compares final candidates; quantum training costs are additional.
+
+![Feasibility falls with depth in the ideal and remote runs. Forte rates are 16.3%, 5.4% and 2.0%, while reported remote execution times rise from 92 to 155 to 224 seconds.](docs/figures/feasibility_runtime.png)
+
+More layers cost more time without consistently improving the portfolio.
+The noisy simulator returned fewer valid samples than the ideal reference
+at each depth. These single-run measurements motivate a constraint-preserving
+mixer; they do not isolate noise effects or provide repeated-run statistics.
+
 ## Run it on Qollab
 
 Open the project, select a **free simulator**, and run with `shots=4096` and
@@ -96,6 +119,7 @@ uv sync
 uv run python scripts/bench_classical.py
 uv run python scripts/train_qaoa.py
 uv run python scripts/analyze_resources.py
+uv run python scripts/make_figures.py
 uv run pytest
 ```
 
