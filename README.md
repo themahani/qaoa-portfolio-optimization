@@ -4,10 +4,81 @@ A Qiskit prototype for selecting five equally weighted assets from a
 twenty-asset universe. Built for the Qollab × IonQ hackathon's Quantum Impact
 theme. We report classical wins and invalid quantum samples explicitly.
 
-## Local setup and reproduction
+**Theme:** Quantum Impact · **Code and documentation license:** MIT
 
-Python 3.14, managed with uv. Qiskit uses the same range as the team's QRC
-project: `>=2.5.2,<3.0.0`; Aer is pinned to `0.17.2`.
+## What is it?
+
+This project chooses five assets from nineteen ETFs and Bitcoin, invests 20%
+in each, and compares the resulting risk–return objective across classical
+methods and a twenty-qubit quantum circuit. Each measured bitstring represents
+a portfolio. We score only portfolios that actually select five assets.
+
+The project includes exact classical ground truth, several inexpensive
+classical heuristics, locally trained QAOA circuits, successful Qollab runs
+on the free IonQ Forte 1 simulator, and a retrospective held-out backtest.
+
+## Why does it matter?
+
+Portfolio selection is a practical finance problem, but a quantum method is
+only useful if its results survive a fair comparison. An apparent quantum
+win in our first implementation disappeared after correcting unequal
+investment budgets and the treatment of invalid samples.
+
+The corrected experiment is an openly reproducible example of how to test
+such claims: use the same objective, include strong classical competitors,
+count invalid samples, and report training costs separately from final shots.
+Here, classical rounding and greedy selection already reach the exact
+optimum. Our contribution is the evaluation and measured limitations, not
+a claim of quantum advantage or an investment recommendation.
+
+## How does the quantum part work?
+
+One qubit represents each asset: a measured one selects it, and a zero leaves
+it out. We encode estimated portfolio variance, expected return and a penalty
+for selecting other than five assets as a quadratic binary objective, then
+map that objective to an Ising Hamiltonian.
+
+QAOA starts with Hadamard gates and alternates two operations. A cost layer
+uses `RZ` and `RZZ` rotations to apply phases determined by the portfolio
+objective. An `RX` mixer changes the amplitudes of candidate selections.
+The layer count is the parameter `depth`, with tested values 1, 2 and 3.
+
+A classical COBYLA optimizer tunes the circuit angles locally using ideal
+Aer expectations. On Qollab, those frozen angles are loaded and one circuit
+is submitted as one job. Its measured portfolios are scored classically
+against the saved exact answer. Training does not run on Qollab. The mixer
+does not preserve cardinality, so invalid samples are counted and excluded
+from the portfolio-cost comparison.
+
+## How to run it
+
+### On Qollab: no installation or uv required
+
+1. Open the published Qollab project. **Public project link: pending.**
+2. Select a free simulator. The reported runs used **IonQ Forte 1 simulator**,
+   not the credit-consuming hardware option.
+3. Use `shots=4096` and choose `depth=1`, `2` or `3` (default: `2`).
+4. Run the project. It submits one circuit, then prints feasible portfolios,
+   objective scores, feasibility rate and the saved classical comparison.
+
+| Parameter | Meaning | Default |
+| --- | --- | --- |
+| `shots` | Number of measured outcomes | 4,096 |
+| `depth` | Number of QAOA layers; tested values are 1, 2 and 3 | 2 |
+
+Reported Forte 1 simulator execution times were 92 s, 155 s and 224 s for
+depths 1, 2 and 3. Loading and queueing may add time. Missing feasible samples
+are reported explicitly rather than treated as valid portfolio results.
+
+For the project owner: upload `main.py`, the `src/` tree and
+`demo/qaoa_demo.json`, with the runtime dependency declaration in
+`requirements.txt`. Qollab calls `main()`; it need not install this repository
+as a Python package.
+
+### Locally: reproduce data, training and comparisons
+
+Python 3.14 is required. Clone the repository and run these commands from its
+root directory using uv:
 
 ```bash
 uv sync
@@ -20,6 +91,53 @@ uv run pytest
 
 The Yahoo snapshot can change on refetch. Seeded random starts and sampling
 aid reproduction; floating-point/platform differences can affect optimization.
+
+## Demo video
+
+**Public 2–3 minute demo-video link: pending.**
+
+The recording should show the problem, a free-simulator Qollab run, how to
+read the output, and the conclusion that classical methods win this instance.
+A recording outline is available in [the video script](docs/video_script.md).
+The script is not a video; add the recording URL and verify that it opens
+without signing in before submitting.
+
+## Dependencies
+
+Qollab's entry point directly uses Qiskit and NumPy. Fetching, training,
+plotting and testing are local workflows, not requirements to run the demo.
+
+| Dependency | Version declaration | Purpose |
+| --- | --- | --- |
+| Python | `>=3.14,<3.15` | Local runtime, matching Python 3.14 |
+| Qiskit | `>=2.5.2,<3.0.0` | Circuit construction and execution |
+| NumPy | `>=1.26` locally; supplied by Qollab | Portfolio scoring and numerical arrays |
+| Qiskit Aer | `==0.17.2` | Local ideal simulation and training |
+| SciPy | `>=1.12` | Local continuous relaxation and COBYLA optimization |
+| pandas | `>=2.0` | Local data preparation and loading |
+| requests | `>=2.31` | Local Yahoo Finance data fetching |
+| matplotlib | `>=3.8` | Local result figures |
+| pytest | `>=9.1.1`, development group | Automated tests |
+| hatchling | Build backend | Local package installation |
+
+`pyproject.toml` declares local dependencies; `uv.lock` records resolved
+versions. `requirements.txt` declares the Qollab Qiskit dependency. License
+and provenance details are in [DISCLOSURES.md](DISCLOSURES.md).
+
+## Before you submit
+
+- [x] Runs on a free Qollab simulator: participant-reported Forte 1 runs at
+  depths 1, 2 and 3, with 4,096 shots each.
+- [ ] Confirm the project is public on Qollab under MIT and add its public URL.
+  The public GitHub repository alone does not satisfy this requirement.
+- [x] Write-up explains what it is, why it matters, how the quantum part works
+  and how to run it.
+- [ ] Add a 2–3 minute demo-video URL and verify access without signing in.
+- [x] Dependencies are listed.
+
+Source code and documentation use [the MIT license](LICENSE). Market-data
+rights are separate. The unchecked items remain submission tasks, not verified
+claims of publication or video availability.
 
 ## Investment model and data
 
@@ -203,18 +321,13 @@ These results are not investment advice.
   successful p=1, p=2 and p=3 runs, each with 4,096 shots. The display identified the backend as
   `ionq_simulator`; the participant identified the selected option as Forte 1.
 
-## Qollab execution
-
-Upload `main.py`, the `src/` tree and `demo/qaoa_demo.json`. Qollab need not
-install this project or run uv. Runtime imports use the source tree; training
-and data dependencies load only in local workflows. `main.py` submits one
-frozen circuit as one job and never trains on the selected backend.
+## Qollab verification
 
 A participant successfully ran the p=1, p=2 and p=3 demos on Qollab's IonQ
 Forte 1 simulator with 4,096 shots each; their results are included above.
 This verifies those reported configurations, not every backend or setting.
-After publishing the final
-version, verify it again from another account or a logged-out browser.
+After publishing the final version, verify it again from another account or
+a logged-out browser.
 
 ## Documentation and rights
 
