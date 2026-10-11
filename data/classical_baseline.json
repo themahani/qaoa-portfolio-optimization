@@ -1,0 +1,90 @@
+{
+  "n_assets": 20,
+  "assets": [
+    "SPY",
+    "QQQ",
+    "IWM",
+    "DIA",
+    "XLK",
+    "XLF",
+    "XLV",
+    "XLE",
+    "XLI",
+    "XLP",
+    "XLU",
+    "TLT",
+    "LQD",
+    "HYG",
+    "GLD",
+    "USO",
+    "EFA",
+    "EEM",
+    "VNQ",
+    "BTC-USD"
+  ],
+  "cardinality": 5,
+  "risk_aversion": 0.5,
+  "penalty": 1.000997514171539,
+  "offset": 25.024937854288474,
+  "months": 119,
+  "exact": {
+    "energy": -0.053687516715307027,
+    "cardinality": 5,
+    "portfolio": [
+      "SPY",
+      "QQQ",
+      "XLK",
+      "GLD",
+      "BTC-USD"
+    ],
+    "states_evaluated": 1048576,
+    "seconds": 0.5104458089917898
+  },
+  "feasible_exact": {
+    "energy": -0.053687516715307027,
+    "true_cost": -0.053687516715303925,
+    "portfolio": [
+      "SPY",
+      "QQQ",
+      "XLK",
+      "GLD",
+      "BTC-USD"
+    ]
+  },
+  "continuous": {
+    "true_cost": -0.031061619857287417,
+    "weights": {
+      "SPY": 0.0,
+      "QQQ": 0.0,
+      "IWM": 0.0,
+      "DIA": 0.0,
+      "XLK": 0.031186,
+      "XLF": 0.0,
+      "XLV": 0.0,
+      "XLE": 0.0,
+      "XLI": 0.0,
+      "XLP": 0.0,
+      "XLU": 0.0,
+      "TLT": 0.0,
+      "LQD": 0.0,
+      "HYG": 0.0,
+      "GLD": 0.0,
+      "USO": 0.0,
+      "EFA": 0.0,
+      "EEM": 0.0,
+      "VNQ": 0.0,
+      "BTC-USD": 0.968814
+    }
+  },
+  "topk_rounded": {
+    "true_cost": -0.0490541251024819,
+    "relative_gap": 0.08630296009763568,
+    "portfolio": [
+      "QQQ",
+      "XLK",
+      "XLF",
+      "XLP",
+      "BTC-USD"
+    ]
+  }
+}

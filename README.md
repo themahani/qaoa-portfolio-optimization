@@ -45,17 +45,36 @@ dependency). `requirements.txt` holds the Qollab-runtime-only pins.
 2 MB per-file cap (~10y daily ≈ hundreds of KB, monthly ≈ tens of KB).
 
 ```
-data/prices_daily.csv     daily adjusted closes
-data/returns_monthly.csv  month-end log returns (mu / Sigma source)
-data/universe.json        ticker metadata + annualized mean/vol
+data/prices_daily.csv        daily adjusted closes
+data/returns_monthly.csv     month-end log returns (mu / Sigma source)
+data/universe.json           ticker metadata + annualized mean/vol
+data/classical_baseline.json exact optima + continuous reference (ground truth)
 ```
+
+## Classical baselines
+
+`scripts/bench_classical.py` builds the cardinality-constrained QUBO
+(`N=20, k=5, q=0.5`, provably dominating penalty `A`) and scores it exactly —
+`2^20 = 1,048,576` states enumerate in under a second:
+
+| Baseline | True cost | Portfolio |
+| --- | --- | --- |
+| Exact (all states) | −0.0537 | SPY, QQQ, XLK, GLD, BTC-USD |
+| Exact (feasible, \|x\|=5) | −0.0537 | same (penalty provably dominates) |
+| Top-5 of continuous Markowitz | −0.0491 | QQQ, XLK, XLF, XLP, BTC-USD (+8.6% gap) |
+
+The continuous long-only Markowitz (SLSQP) is the realistic quant reference;
+its top-`k` rounding is what QAOA must beat, and the exact feasible optimum
+is the ground truth it is scored against. Metrics: unpenalized Markowitz
+cost, plus feasibility rate and best-sampled cost for QAOA runs.
 
 ## Layout
 
 ```
 scripts/pull_data.py      Yahoo chart API pull -> prices/returns/universe
-src/qaoa_portfolio/       data loaders + mean/cov helpers (QUBO next)
-tests/test_data.py        panel shape, coverage, 2 MB cap checks
+scripts/bench_classical.py QUBO baselines -> data/classical_baseline.json
+src/qaoa_portfolio/       data loaders, QUBO/Ising, exact + continuous baselines
+tests/                    panel checks + QUBO/Ising/baseline consistency
 demo/                     Qollab demo payload (TBD)
 ```
 
