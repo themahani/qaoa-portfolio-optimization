@@ -50,21 +50,21 @@ Only feasible portfolios enter the cost comparison. The relative gap is
 
 ### Optimization: classical, local QAOA and IonQ simulator
 
-| Method | Execution environment | Candidate budget | Best feasible cost | Gap to optimum |
-| --- | --- | --- | ---: | ---: |
-| Exact enumeration | Local NumPy | 1,048,576 binary states | -0.028756 | 0.00% |
-| Exact feasible enumeration | Local NumPy | 15,504 five-asset portfolios | -0.028756 | 0.00% |
-| Continuous relaxation + rounding | Local SciPy | One solve + rounding | -0.028756 | 0.00% |
-| Greedy selection | Local NumPy | 91 objective evaluations | -0.028756 | 0.00% |
-| Random starts + swaps | Local NumPy | 16 starts; 6,032 objective evaluations | -0.028756 | 0.00% |
-| Rounding + swaps | Local NumPy | One start; 77 objective evaluations | -0.028756 | 0.00% |
-| Random feasible sampling | Local NumPy | 4,096 feasible candidates | -0.028492 | 0.92% |
-| QAOA p=1 | Local ideal Aer + seeded sampling | 4,096 shots after training | -0.028117 | 2.22% |
-| QAOA p=2 | Local ideal Aer + seeded sampling | 4,096 shots after training | -0.028432 | 1.13% |
-| QAOA p=3 | Local ideal Aer + seeded sampling | 4,096 shots after training | -0.026374 | 8.28% |
-| QAOA p=1 | Qollab → IonQ Forte 1 noise-model simulator | 4,096 shots; frozen local angles | -0.027485 | ≈4.42% |
-| QAOA p=2 | Qollab → IonQ Forte 1 noise-model simulator | 4,096 shots; frozen local angles | -0.028117 | ≈2.22% |
-| QAOA p=3 | Qollab → IonQ Forte 1 noise-model simulator | 4,096 shots; frozen local angles | -0.026171 | ≈8.99% |
+| Method                           | Execution environment                       | Candidate budget                       | Best feasible cost | Gap to optimum |
+| -------------------------------- | ------------------------------------------- | -------------------------------------- | -----------------: | -------------: |
+| Exact enumeration                | Local NumPy                                 | 1,048,576 binary states                |          -0.028756 |          0.00% |
+| Exact feasible enumeration       | Local NumPy                                 | 15,504 five-asset portfolios           |          -0.028756 |          0.00% |
+| Continuous relaxation + rounding | Local SciPy                                 | One solve + rounding                   |          -0.028756 |          0.00% |
+| Greedy selection                 | Local NumPy                                 | 91 objective evaluations               |          -0.028756 |          0.00% |
+| Random starts + swaps            | Local NumPy                                 | 16 starts; 6,032 objective evaluations |          -0.028756 |          0.00% |
+| Rounding + swaps                 | Local NumPy                                 | One start; 77 objective evaluations    |          -0.028756 |          0.00% |
+| Random feasible sampling         | Local NumPy                                 | 4,096 feasible candidates              |          -0.028492 |          0.92% |
+| QAOA p=1                         | Local ideal Aer + seeded sampling           | 4,096 shots after training             |          -0.028117 |          2.22% |
+| QAOA p=2                         | Local ideal Aer + seeded sampling           | 4,096 shots after training             |          -0.028432 |          1.13% |
+| QAOA p=3                         | Local ideal Aer + seeded sampling           | 4,096 shots after training             |          -0.026374 |          8.28% |
+| QAOA p=1                         | Qollab → IonQ Forte 1 noise-model simulator | 4,096 shots; frozen local angles       |          -0.027485 |         ≈4.42% |
+| QAOA p=2                         | Qollab → IonQ Forte 1 noise-model simulator | 4,096 shots; frozen local angles       |          -0.028117 |         ≈2.22% |
+| QAOA p=3                         | Qollab → IonQ Forte 1 noise-model simulator | 4,096 shots; frozen local angles       |          -0.026171 |         ≈8.99% |
 
 The IonQ costs were printed to six decimal places; their gaps are therefore
 approximate. These are **remote simulation results, not quantum hardware runs**.
@@ -84,14 +84,14 @@ Local training used three COBYLA restarts with up to 200 evaluations per
 restart. Exact feasible probabilities come from ideal statevectors; observed
 rates come from 4,096 sampled outcomes. These are different quantities.
 
-| Run | Exact ideal feasible probability | Observed feasible rate | Circuit depth | RZZ gates before backend compilation | Local training evaluations | Local training time | Reported remote circuit execution time |
-| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| Local p=1 | 33.8% | 34.3% | 41 | 190 | 441 | 205.4 s | — |
-| Local p=2 | 18.9% | 20.3% | 63 | 380 | 600 | 478.1 s | — |
-| Local p=3 | 3.1% | 3.2% | 85 | 570 | 600 | 604.7 s | — |
-| IonQ Forte 1 simulator p=1 | 33.8% ideal reference only | 16.3% | 41 | 190 | Reused local p=1 angles | No retraining on Qollab | 92.0 s |
-| IonQ Forte 1 simulator p=2 | 18.9% reference; not a remote probability estimate | 5.4% | 63 | 380 | Reused local p=2 angles | No retraining on Qollab | 155.0 s |
-| IonQ Forte 1 simulator p=3 | 3.1% ideal reference only | 2.0% | 85 | 570 | Reused local p=3 angles | No retraining on Qollab | 224.0 s |
+| Run                        |                   Exact ideal feasible probability | Observed feasible rate | Circuit depth | RZZ gates before backend compilation | Local training evaluations |     Local training time | Reported remote circuit execution time |
+| -------------------------- | -------------------------------------------------: | ---------------------: | ------------: | -----------------------------------: | -------------------------: | ----------------------: | -------------------------------------: |
+| Local p=1                  |                                              33.8% |                  34.3% |            41 |                                  190 |                        441 |                 205.4 s |                                      — |
+| Local p=2                  |                                              18.9% |                  20.3% |            63 |                                  380 |                        600 |                 478.1 s |                                      — |
+| Local p=3                  |                                               3.1% |                   3.2% |            85 |                                  570 |                        600 |                 604.7 s |                                      — |
+| IonQ Forte 1 simulator p=1 |                         33.8% ideal reference only |                  16.3% |            41 |                                  190 |    Reused local p=1 angles | No retraining on Qollab |                                 92.0 s |
+| IonQ Forte 1 simulator p=2 | 18.9% reference; not a remote probability estimate |                   5.4% |            63 |                                  380 |    Reused local p=2 angles | No retraining on Qollab |                                155.0 s |
+| IonQ Forte 1 simulator p=3 |                          3.1% ideal reference only |                   2.0% |            85 |                                  570 |    Reused local p=3 angles | No retraining on Qollab |                                224.0 s |
 
 Each remote run retained fewer valid portfolios than its local ideal
 counterpart: 16.3% versus 34.3% at p=1, 5.4% versus 20.3% at p=2, and 2.0%
@@ -114,16 +114,16 @@ expectation evaluation or a shot.
 
 ### Best feasible portfolios
 
-| Result | Selected assets, each at 20% | Objective cost |
-| --- | --- | ---: |
-| Exact / rounding / greedy / swap-search optimum | SPY, QQQ, DIA, XLK, BTC-USD | -0.028756 |
-| Random feasible sampling | SPY, QQQ, XLK, XLV, BTC-USD | -0.028492 |
-| Local QAOA p=1 | QQQ, DIA, XLK, XLU, BTC-USD | -0.028117 |
-| Local QAOA p=2 | SPY, QQQ, XLK, XLF, BTC-USD | -0.028432 |
-| Local QAOA p=3 | SPY, XLK, XLV, EEM, BTC-USD | -0.026374 |
-| IonQ Forte 1 simulator QAOA p=1 | QQQ, XLK, XLI, TLT, BTC-USD | -0.027485 |
-| IonQ Forte 1 simulator QAOA p=2 | QQQ, DIA, XLK, XLU, BTC-USD | -0.028117 |
-| IonQ Forte 1 simulator QAOA p=3 | SPY, QQQ, IWM, EEM, BTC-USD | -0.026171 |
+| Result                                          | Selected assets, each at 20% | Objective cost |
+| ----------------------------------------------- | ---------------------------- | -------------: |
+| Exact / rounding / greedy / swap-search optimum | SPY, QQQ, DIA, XLK, BTC-USD  |      -0.028756 |
+| Random feasible sampling                        | SPY, QQQ, XLK, XLV, BTC-USD  |      -0.028492 |
+| Local QAOA p=1                                  | QQQ, DIA, XLK, XLU, BTC-USD  |      -0.028117 |
+| Local QAOA p=2                                  | SPY, QQQ, XLK, XLF, BTC-USD  |      -0.028432 |
+| Local QAOA p=3                                  | SPY, XLK, XLV, EEM, BTC-USD  |      -0.026374 |
+| IonQ Forte 1 simulator QAOA p=1                 | QQQ, XLK, XLI, TLT, BTC-USD  |      -0.027485 |
+| IonQ Forte 1 simulator QAOA p=2                 | QQQ, DIA, XLK, XLU, BTC-USD  |      -0.028117 |
+| IonQ Forte 1 simulator QAOA p=3                 | SPY, QQQ, IWM, EEM, BTC-USD  |      -0.026171 |
 
 The remote p=2 winner happens to equal the local p=1 winner; those are separate
 runs of different trained circuits, not duplicated measurements.
@@ -132,33 +132,33 @@ runs of different trained circuits, not duplicated measurements.
 
 **p=1 — 4,096 shots, 92.0 s reported execution time**
 
-| Rank | Selected assets | Objective cost | Observed shots |
-| --- | --- | ---: | ---: |
-| 1 | QQQ, XLK, XLI, TLT, BTC-USD | -0.027485 | 1 |
-| 2 | QQQ, XLK, XLF, HYG, BTC-USD | -0.027214 | 1 |
-| 3 | QQQ, XLK, XLP, LQD, BTC-USD | -0.027075 | 1 |
-| 4 | SPY, QQQ, XLF, XLV, BTC-USD | -0.026536 | 1 |
-| 5 | SPY, DIA, XLK, LQD, BTC-USD | -0.026354 | 1 |
+| Rank | Selected assets             | Objective cost | Observed shots |
+| ---- | --------------------------- | -------------: | -------------: |
+| 1    | QQQ, XLK, XLI, TLT, BTC-USD |      -0.027485 |              1 |
+| 2    | QQQ, XLK, XLF, HYG, BTC-USD |      -0.027214 |              1 |
+| 3    | QQQ, XLK, XLP, LQD, BTC-USD |      -0.027075 |              1 |
+| 4    | SPY, QQQ, XLF, XLV, BTC-USD |      -0.026536 |              1 |
+| 5    | SPY, DIA, XLK, LQD, BTC-USD |      -0.026354 |              1 |
 
 **p=2 — 4,096 shots, 155.0 s reported execution time**
 
-| Rank | Selected assets | Objective cost | Observed shots |
-| --- | --- | ---: | ---: |
-| 1 | QQQ, DIA, XLK, XLU, BTC-USD | -0.028117 | 1 |
-| 2 | QQQ, XLK, XLU, EEM, BTC-USD | -0.027350 | 1 |
-| 3 | QQQ, XLK, XLV, VNQ, BTC-USD | -0.027151 | 1 |
-| 4 | QQQ, XLK, XLU, TLT, BTC-USD | -0.027088 | 1 |
-| 5 | QQQ, XLK, LQD, EEM, BTC-USD | -0.026864 | 1 |
+| Rank | Selected assets             | Objective cost | Observed shots |
+| ---- | --------------------------- | -------------: | -------------: |
+| 1    | QQQ, DIA, XLK, XLU, BTC-USD |      -0.028117 |              1 |
+| 2    | QQQ, XLK, XLU, EEM, BTC-USD |      -0.027350 |              1 |
+| 3    | QQQ, XLK, XLV, VNQ, BTC-USD |      -0.027151 |              1 |
+| 4    | QQQ, XLK, XLU, TLT, BTC-USD |      -0.027088 |              1 |
+| 5    | QQQ, XLK, LQD, EEM, BTC-USD |      -0.026864 |              1 |
 
 **p=3 — 4,096 shots, 224.0 s reported execution time**
 
-| Rank | Selected assets | Objective cost | Observed shots |
-| --- | --- | ---: | ---: |
-| 1 | SPY, QQQ, IWM, EEM, BTC-USD | -0.026171 | 1 |
-| 2 | QQQ, IWM, XLF, EEM, BTC-USD | -0.025734 | 1 |
-| 3 | QQQ, XLI, XLP, GLD, BTC-USD | -0.025510 | 1 |
-| 4 | QQQ, XLI, LQD, GLD, BTC-USD | -0.024974 | 1 |
-| 5 | SPY, IWM, XLF, XLV, BTC-USD | -0.024922 | 1 |
+| Rank | Selected assets             | Objective cost | Observed shots |
+| ---- | --------------------------- | -------------: | -------------: |
+| 1    | SPY, QQQ, IWM, EEM, BTC-USD |      -0.026171 |              1 |
+| 2    | QQQ, IWM, XLF, EEM, BTC-USD |      -0.025734 |              1 |
+| 3    | QQQ, XLI, XLP, GLD, BTC-USD |      -0.025510 |              1 |
+| 4    | QQQ, XLI, LQD, GLD, BTC-USD |      -0.024974 |              1 |
+| 5    | SPY, IWM, XLF, XLV, BTC-USD |      -0.024922 |              1 |
 
 These are ranked by objective cost, not sampling frequency. Each appeared
 once, so the tables do not establish stable portfolio-selection probabilities.
@@ -170,13 +170,13 @@ points charged per absolute weight traded, including initial investment from
 cash. Return is cumulative over two years; volatility is annualized and
 drawdown is measured at monthly observation points.
 
-| Portfolio source | Net cumulative return | Annualized volatility | Maximum drawdown | Total absolute weight turnover |
-| --- | ---: | ---: | ---: | ---: |
-| Classical exact / rounding / greedy / swap-search optimum | 121.31% | 18.77% | -6.81% | 1.914 |
-| Random feasible sampling | 111.53% | 18.06% | -6.84% | 1.942 |
-| Local QAOA p=1 | 108.68% | 18.28% | -7.67% | 2.004 |
-| Local QAOA p=2 | 126.01% | 18.84% | -6.69% | 1.940 |
-| Local QAOA p=3 | 91.26% | 17.57% | -6.90% | 1.991 |
+| Portfolio source                                          | Net cumulative return | Annualized volatility | Maximum drawdown | Total absolute weight turnover |
+| --------------------------------------------------------- | --------------------: | --------------------: | ---------------: | -----------------------------: |
+| Classical exact / rounding / greedy / swap-search optimum |               121.31% |                18.77% |           -6.81% |                          1.914 |
+| Random feasible sampling                                  |               111.53% |                18.06% |           -6.84% |                          1.942 |
+| Local QAOA p=1                                            |               108.68% |                18.28% |           -7.67% |                          2.004 |
+| Local QAOA p=2                                            |               126.01% |                18.84% |           -6.69% |                          1.940 |
+| Local QAOA p=3                                            |                91.26% |                17.57% |           -6.90% |                          1.991 |
 
 No separate remote backtests were run. The remote p=2 winner is identical
 to the local p=1 portfolio, so the existing local p=1 backtest describes that

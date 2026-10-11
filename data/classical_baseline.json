@@ -503,7 +503,7 @@
         19
       ],
       "objective_evaluations": 4096,
-      "seconds": 0.013559617975261062
+      "seconds": 0.014141305990051478
     },
     "random_plus_swaps": {
       "true_cost": -0.028756035548126585,
@@ -515,7 +515,7 @@
         19
       ],
       "objective_evaluations": 6032,
-      "seconds": 0.02253873401787132
+      "seconds": 0.02437199401902035
     },
     "rounded_plus_swaps": {
       "true_cost": -0.028756035548126585,
@@ -527,7 +527,7 @@
         19
       ],
       "objective_evaluations": 77,
-      "seconds": 0.00033485901076346636
+      "seconds": 0.0003338789683766663
     },
     "greedy": {
       "true_cost": -0.028756035548126585,
@@ -539,7 +539,7 @@
         19
       ],
       "objective_evaluations": 91,
-      "seconds": 0.0003390589845366776
+      "seconds": 0.0003965690266340971
     }
   },
   "exact": {
@@ -553,7 +553,7 @@
       "BTC-USD"
     ],
     "states_evaluated": 1048576,
-    "seconds": 0.5136420379858464
+    "seconds": 0.5916312559857033
   },
   "feasible_exact": {
     "energy": -0.028756035548126224,
