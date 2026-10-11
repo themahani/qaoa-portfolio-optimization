@@ -49,7 +49,8 @@ first-of-its-kind implementation is made.
 
 This project was created separately from the team's QRC project during this
 hackathon session. Local simulation results are not quantum hardware results.
-Successful Qollab execution must be verified separately. This is a research
+The demo ran on Qollab's IonQ Forte 1 noise-model simulator at depths one, two
+and three (`data/ionq_runs.json`); those are remote simulations. This is a research
 prototype, not investment advice or evidence of quantum advantage.
 
 This effort is supported by Qollab & IonQ.

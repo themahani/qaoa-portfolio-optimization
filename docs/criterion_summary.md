@@ -28,8 +28,11 @@ Training happens locally using Aer and COBYLA. The demo submits one frozen
 circuit as one job and interprets measured bitstrings as selected assets.
 Its imports do not eagerly load the data or training dependencies. Automated
 checks exercise local execution and source-tree imports without installing
-the project. These checks are not evidence of a successful Qollab cloud run;
-that still needs to be verified on the platform.
+the project. The demo was then run on Qollab's IonQ Forte 1 noise-model
+simulator at all three depths with 4,096 shots each; it completed without
+errors in 92 to 224 seconds per run. Under that noise model the share of
+valid portfolios fell from 34% to 16% at depth one and from 20% to 5% at
+depth two. The runs are recorded in `data/ionq_runs.json`.
 
 The evaluation records feasible-sample rates and best feasible costs. It also
 includes uniform feasible sampling, greedy selection, swap search from the
@@ -62,5 +65,6 @@ third-party market-data rights and identify AI assistance.
 
 The scripts regenerate the data-derived artifacts, classical comparisons,
 trained circuit payload and held-out backtest. Saved results identify the
-training window and retain failed or infeasible outcomes. Local simulation
-must not be described as an IonQ hardware or Qollab cloud result.
+training window and retain failed or infeasible outcomes. Every table and
+the figure state whether a number comes from the noiseless local simulation
+or from IonQ's simulator on Qollab. Neither is a quantum hardware result.

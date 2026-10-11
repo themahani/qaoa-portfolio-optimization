@@ -48,6 +48,8 @@ assets, equal investment weights, q=0.5, and 2015–2020 training estimates.
 Only feasible portfolios enter the cost comparison. The relative gap is
 `100 * (cost - exact_cost) / abs(exact_cost)`.
 
+![QAOA against classical baselines](docs/figures/qaoa_vs_classical.png)
+
 ### Optimization: classical, local QAOA and IonQ simulator
 
 | Method | Execution environment | Candidate budget | Best feasible cost | Gap to optimum |
@@ -194,6 +196,9 @@ These results are not investment advice.
 - `demo/qaoa_demo.json`: ideal local probabilities, frozen angles, training
   costs and seeded local sampling results. It does **not** contain IonQ counts.
 - `data/backtest.json`: retrospective portfolio-performance calculations.
+- `data/ionq_runs.json`: the IonQ Forte 1 simulator runs below, transcribed
+  from the Qollab console output. `scripts/make_figures.py` draws the figure
+  from this file and `demo/qaoa_demo.json`; alt text is in `docs/figures/`.
 - IonQ Forte 1 simulator rows: participant-provided Qollab output from the
   successful p=1, p=2 and p=3 runs, each with 4,096 shots. The display identified the backend as
   `ionq_simulator`; the participant identified the selected option as Forte 1.
@@ -213,7 +218,8 @@ version, verify it again from another account or a logged-out browser.
 
 ## Documentation and rights
 
-[Criterion write-up](docs/criterion_summary.md) · [Disclosures](DISCLOSURES.md).
+[Criterion write-up](docs/criterion_summary.md) · [Project page text](docs/project_page.md) ·
+[Video script](docs/video_script.md) · [Disclosures](DISCLOSURES.md).
 Code and documentation are MIT licensed. Market-data redistribution rights
 are separate and have not been established by the code license.
 

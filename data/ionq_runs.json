@@ -1,0 +1,13 @@
+{
+  "note": "Runs of main.py on Qollab's IonQ Forte 1 noise-model simulator, 2026-10-11. Values copied from the Qollab console output as reported in README.md. One circuit and one job per run, 20 qubits, frozen angles trained locally. Costs were printed to six decimal places. Remote simulation, not quantum hardware.",
+  "backend": "ionq_simulator (IonQ Forte 1 noise model, via Qollab)",
+  "shots": 4096,
+  "runs": [
+    {"depth": 1, "rzz_gates": 190, "execution_seconds": 92.0, "observed_feasible_rate": 0.163, "best_feasible_cost": -0.027485,
+     "best_portfolio": ["QQQ", "XLK", "XLI", "TLT", "BTC-USD"]},
+    {"depth": 2, "rzz_gates": 380, "execution_seconds": 155.0, "observed_feasible_rate": 0.054, "best_feasible_cost": -0.028117,
+     "best_portfolio": ["QQQ", "DIA", "XLK", "XLU", "BTC-USD"]},
+    {"depth": 3, "rzz_gates": 570, "execution_seconds": 224.0, "observed_feasible_rate": 0.020, "best_feasible_cost": -0.026171,
+     "best_portfolio": ["SPY", "QQQ", "IWM", "EEM", "BTC-USD"]}
+  ]
+}
