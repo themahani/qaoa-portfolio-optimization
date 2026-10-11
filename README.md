@@ -1,6 +1,7 @@
 # QAOA Portfolio Optimization
 
 **Team Name**: QuanTech
+
 **Team Members**: Ali Karimi, Ali Mahani, Sabah Ud Din Ahmad
 
 **Theme**: Quantum Impact
