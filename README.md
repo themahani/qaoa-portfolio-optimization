@@ -17,6 +17,8 @@ managed with `uv`, and `pyproject.toml` is the single source of truth:
 ```bash
 uv sync
 uv run python scripts/pull_data.py
+uv run python scripts/bench_classical.py
+uv run python scripts/train_qaoa.py
 uv run pytest
 ```
 
@@ -71,12 +73,46 @@ cost, plus feasibility rate and best-sampled cost for QAOA runs.
 ## Layout
 
 ```
+main.py                   Qollab entry point: one frozen circuit, one job
 scripts/pull_data.py      Yahoo chart API pull -> prices/returns/universe
 scripts/bench_classical.py QUBO baselines -> data/classical_baseline.json
-src/qaoa_portfolio/       data loaders, QUBO/Ising, exact + continuous baselines
-tests/                    panel checks + QUBO/Ising/baseline consistency
-demo/                     Qollab demo payload (TBD)
+scripts/train_qaoa.py     angle pre-training -> demo/qaoa_demo.json
+src/qaoa_portfolio/       data loaders, QUBO/Ising, baselines, QAOA circuit
+tests/                    panel, QUBO, circuit, demo checks (20 tests)
+demo/qaoa_demo.json       frozen angles + metrics + references for main.py
 ```
+
+## QAOA
+
+`src/qaoa_portfolio/circuit.py` maps the QUBO to Ising (`x = (1−z)/2`) and
+builds the depth-`p` circuit: `H` on all 20 qubits, then per layer
+`RZ(2γh)` + `RZZ(2γJ)` on all 190 pairs (dense — the cardinality penalty
+couples every pair) + `RX(2β)` mixer. `scripts/train_qaoa.py` pre-trains
+angles locally with multi-restart COBYLA against exact statevector
+expectations and seeded finite-shot sampling, freezing everything into
+`demo/qaoa_demo.json` (angles, distribution metrics, references).
+
+Trained depths (3 COBYLA restarts × 200 iters, exact statevector; 4096
+seeded shots; optimum −0.0537, classical top-5 rounding −0.0491):
+
+| Depth | P(feasible) | Best of 4096 shots | vs top-5 |
+| --- | --- | --- | --- |
+| p=1 | 1.5% | −0.0512 | beats rounding |
+| p=2 | 65.7% | −0.0523 (2.5% gap to opt) | beats rounding |
+| p=3 | 5.2% | −0.0503 | beats rounding |
+
+p=2 is the demo default. p=3 trails p=2 under the fixed optimizer budget —
+deeper is not automatically better, and we report it as measured. No depth
+put mass on the exact optimum in 4096 shots (`P(opt) ≈ 0`); the claim is
+beating the rounding heuristic at matched sampling cost, not optimality.
+
+## Qollab demo
+
+`main.py` is the Qollab entry point: it builds the frozen p-`depth` circuit,
+submits **one circuit as one job** (the IonQ constraint — same pattern as
+our QRC project), decodes counts into portfolios and scores them with the
+unpenalized Markowitz cost beside the exact optimum and the classical
+top-`k` rounding. No training happens on Qollab; Qiskit + NumPy only.
 
 ## License
 
