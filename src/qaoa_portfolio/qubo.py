@@ -2,7 +2,7 @@
 
 The optimization problem is::
 
-    min  q * x^T Sigma x - mu^T x + A * (sum(x) - k)^2
+    min  q * x^T Sigma x / k^2 - mu^T x / k + A * (sum(x) - k)^2
     s.t. x in {0, 1}^N
 
 where ``mu``/``Sigma`` are the mean vector/covariance of monthly returns,
@@ -63,7 +63,9 @@ def suggest_penalty(
     Any binary state satisfies ``|q x^T Sigma x - mu^T x| <= scale`` with
     ``scale = q * sum|Sigma| + sum|mu|``, so a cardinality violation (which
     costs at least ``A``) can never pay off when ``A > scale``. The returned
-    value is ``margin * scale``.
+    value is ``margin * scale``. Pass moments already scaled for investment
+    weights. With the default margin of two, A exceeds the full possible
+    objective range (at most twice scale). This is deliberately conservative.
 
     Parameters
     ----------
@@ -83,6 +85,8 @@ def suggest_penalty(
     """
     mu_arr = np.asarray(mu, dtype=float)
     sigma_arr = np.asarray(Sigma, dtype=float)
+    if margin <= 1 or risk_aversion < 0:
+        raise ValueError("margin must exceed one and risk_aversion must be nonnegative")
     scale = risk_aversion * float(np.abs(sigma_arr).sum()) + float(np.abs(mu_arr).sum())
     return margin * scale
 
@@ -97,7 +101,7 @@ def build_qubo(
 ) -> QuboInstance:
     """Build the cardinality-constrained portfolio QUBO.
 
-    Expands ``A * (sum(x) - k)^2 = A * (sum(x) - 2*k*sum(x) + k^2)`` using
+    Expands the squared cardinality penalty including all cross terms, using
     ``xi^2 = xi`` and folds the linear part into the diagonal of ``Q``;
     the constant ``A * k^2`` becomes ``offset``.
 
@@ -124,14 +128,27 @@ def build_qubo(
     """
     mu_arr = np.asarray(mu, dtype=float)
     sigma_arr = np.asarray(Sigma, dtype=float)
+    if mu_arr.ndim != 1 or sigma_arr.shape != (len(mu_arr), len(mu_arr)):
+        raise ValueError("Expected a mean vector and a matching square covariance")
+    if not np.isfinite(mu_arr).all() or not np.isfinite(sigma_arr).all():
+        raise ValueError("Moments must be finite")
+    if risk_aversion < 0:
+        raise ValueError("risk_aversion must be nonnegative")
     sigma_arr = 0.5 * (sigma_arr + sigma_arr.T)
+    if np.linalg.eigvalsh(sigma_arr).min() < -1e-10:
+        raise ValueError("Covariance must be positive semidefinite")
     n = mu_arr.shape[0]
     if sigma_arr.shape != (n, n):
         raise ValueError(f"Sigma shape {sigma_arr.shape} != ({n}, {n})")
     if not 1 <= cardinality <= n:
         raise ValueError(f"cardinality k={cardinality} out of range for N={n}")
+    # Exactly k selected assets each receive 1/k of the invested capital.
+    mu_arr = mu_arr / cardinality
+    sigma_arr = sigma_arr / cardinality**2
     if penalty is None:
         penalty = suggest_penalty(mu_arr, sigma_arr, risk_aversion)
+    if penalty <= 0:
+        raise ValueError("penalty must be positive")
 
     q_mat = np.zeros((n, n))
     q_mat[np.diag_indices(n)] = (

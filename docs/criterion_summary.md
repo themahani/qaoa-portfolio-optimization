@@ -1,86 +1,66 @@
-# Written summary — one section per judging criterion
+# Written summary — judging criteria
 
 ## Novelty and creativity
 
-Portfolio optimization with QAOA has been tried before, so our novelty is not
-the idea itself. It is the honesty and completeness of the comparison around
-it.
+This project does not introduce portfolio QAOA or claim to be the first
+implementation. It explores how to evaluate quantum portfolio selection
+without confusing invalid portfolios, different investment budgets, or a
+weak classical comparison with evidence of quantum advantage.
 
-Most QAOA demonstrations compare against weak or vaguely described classical
-methods, which makes it impossible to tell whether the quantum part did
-anything useful. We did the opposite. We built the exact answer first: every
-one of the 1,048,576 possible portfolios was evaluated, so the true optimum is
-known, not estimated. We also built the method a working quant would actually
-use — a continuous Markowitz optimization rounded down to the five best
-assets. QAOA is scored against both of these, on the same numbers, with the
-same cost function. That kind of ground-truth benchmarking for a 20-qubit
-finance QUBO, published openly with all code and data, is something we have
-not seen elsewhere.
-
-We also report what did not work. A three-layer QAOA circuit scores worse
-than the two-layer one under our fixed training budget, and no circuit depth
-ever sampled the exact optimum in 4,096 shots. Many write-ups would quietly
-drop those facts. We kept them, because a benchmark that only reports wins is
-advertising, not science. The penalty construction is a smaller novelty: we
-prove the cardinality penalty dominates any possible objective gain, so the
-exact optimum is guaranteed feasible — and then both the penalized and the
-feasible-only searches land on the same portfolio, confirming the proof in
-practice.
+Each valid solution chooses five assets and assigns one fifth of the capital
+to each. The exact solver, continuous relaxation, classical heuristics and
+QAOA are scored against that same investment objective. We count invalid
+quantum samples, but do not let their costs enter the comparison. We publish
+negative results rather than selecting only settings where quantum appears
+to win. After correcting the investment model, continuous rounding already
+finds the exact optimum for our training instance. That is an important
+result, not something to conceal.
 
 ## Technical execution
 
-Everything runs, and everything is checked. The project is built with Qiskit
-and runs on Qollab's free simulators: the demo submits exactly one circuit as
-one job, which is the hard constraint on IonQ's remote simulators, and the
-same code path was executed end-to-end on a local simulator in our test
-suite. Twenty automated tests cover the data panel (shape, date coverage, the
-2 MB file cap), the QUBO construction (energy matches the textbook objective
-term by term), the QUBO-to-Ising mapping (energies preserved exactly under
-the substitution), the brute-force solver (agrees with naive enumeration),
-and the demo itself (payload fields, circuit statistics, a full run of the
-entry point).
+The implementation uses Qiskit to construct the circuit and maps the binary
+portfolio objective to an Ising Hamiltonian. An exhaustive classical search
+checks every binary state. A separate search over valid five-asset portfolios
+checks that the penalty enforces the constraint. Tests compare the QUBO,
+Ising model and direct equal-weight investment objective.
 
-Two bugs were caught by these tests before they could reach the results — a
-missing risk term on the QUBO diagonal and an off-by-one in the Ising field
-formula — which is the point of writing the tests first. The pipeline is
-seeded and reproducible: the same commands produce the same angles, the same
-energies, and the same tables. Energy tables are precomputed once and reused,
-so training is minutes rather than hours, and the demo carries only frozen
-numbers — no training, no heavy libraries, just Qiskit and NumPy on Qollab's
-side.
+Training happens locally using Aer and COBYLA. The demo submits one frozen
+circuit as one job and interprets measured bitstrings as selected assets.
+Its imports do not eagerly load the data or training dependencies. Automated
+checks exercise local execution and source-tree imports without installing
+the project. These checks are not evidence of a successful Qollab cloud run;
+that still needs to be verified on the platform.
+
+The evaluation records feasible-sample rates and best feasible costs. It also
+includes uniform feasible sampling, greedy selection, swap search from the
+rounded solution, and multi-start random swap search. Classical objective
+counts and timings are recorded. Quantum optimizer evaluations and training
+time are separate from the final shot budget: a simulator expectation
+evaluation is not equivalent in cost to a classical objective evaluation.
 
 ## Impact potential
 
-The direct impact is a reusable, honest template for asking "did the quantum
-subroutine help?" in finance. Anyone can take this repo, swap in their own
-assets or their own variational circuit, and get an answer measured against
-the exact optimum instead of a strawman. That matters because finance is full
-of quantum claims that cannot be checked; a public harness where the
-classical side is exact raises the bar for all of them.
+The useful outcome is a reproducible evaluation workflow, not a trading
+recommendation. At this size, exact classical optimization is inexpensive.
+Our corrected rounded baseline reaches the optimum, so this instance gives
+no reason to replace that method with a quantum computer.
 
-The result itself is modest and we state it plainly: at 20 assets, exact
-classical enumeration takes half a second and beats everything, so nobody
-should run this on a quantum computer to save time today. What QAOA does do
-is beat the realistic classical shortcut — the top-5 rounding of the
-continuous solution — at a matched sampling budget, landing within 2.5% of
-the true optimum at depth two. That is a narrow claim, but it is a real one:
-a shallow quantum heuristic outperforming the standard classical heuristic on
-real market data with the same number of samples. For students and
-practitioners, the project also works as a complete worked example of the
-full hybrid loop — data, QUBO, exact baseline, variational training,
-single-job deployment — with every step runnable and every number
-reproducible.
+Return estimates and covariance use only 2015–2020 observations. The later
+2021–2022 interval is reserved rather than used to tune the current fixed
+configuration. A separate backtest evaluates frozen portfolios on 2023–2024
+data, with monthly equal-weight rebalancing and an explicit trading-cost
+assumption. This separates the question of solving an estimated objective
+from the question of investment performance on unseen observations. One
+historical split does not establish generalization or financial value.
 
 ## Documentation quality
 
-The repository is written to be read by strangers. Every function carries a
-plain-language docstring explaining what it does, what it takes, and what it
-returns. The README walks through setup (four commands), the data (what each
-ticker is and why it is there), the baselines (with the actual numbers), the
-QAOA method, and the demo — including the results table with the depths that
-underperformed. DISCLOSURES.md lists every dependency with its license,
-states the data provenance, and names the papers the design follows. Figures
-and tables in the project page label which numbers came from local simulation
-and which from the Qollab run, so a judge never has to guess what ran where.
-A newcomer can clone the repo, run the test suite, and reproduce every claim
-in this summary in under half an hour.
+The README explains the investment convention, data preparation, chronological
+split, exact answer and classical alternatives. Functions document their
+inputs and outputs. The disclosures distinguish our MIT code license from
+third-party market-data rights and identify AI assistance.
+
+The scripts regenerate the data-derived artifacts, classical comparisons,
+trained circuit payload and held-out backtest. Saved results identify the
+training window and retain failed or infeasible outcomes. Local simulation
+must not be described as an IonQ hardware or Qollab cloud result.

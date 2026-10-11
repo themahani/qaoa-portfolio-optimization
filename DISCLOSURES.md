@@ -1,71 +1,55 @@
 # Disclosures
 
-For the Qollab × IonQ Hackathon 2026 (Quantum Impact theme). Everything below
-is disclosed per the hackathon terms; judging covers what this team built
-during the build window (Oct 9–11, 2026).
-
 ## AI assistance
 
-Developed with AI coding assistance (OpenCode agent, Muse Spark 1.3),
-with every result verified by the human authors: all 20 tests pass, the
-benchmark numbers are reproduced by re-running the scripts, and the demo was
-executed end-to-end on a local simulator. No AI-generated content is presented
-as measured data; all tables report script outputs.
+Code and documentation were developed with OpenCode AI assistance. The agent
+in this session identifies itself as OpenAI GPT-6.1 Sol Fast. The previous
+disclosure naming Muse Spark 1.3 was incorrect. Automated checks and local
+script executions verify specific behaviors; they do not establish human
+review of every line or platform compatibility.
 
-## Libraries and licenses
+## Code and dependency licenses
 
-We are licensed to use every dependency below under its OSI-approved license.
-No copyleft (GPL/AGPL) package is used anywhere in the dependency closure.
+Our source code and documentation are MIT licensed. Direct dependencies are
+Qiskit and Qiskit Aer (Apache-2.0), NumPy, SciPy and pandas (BSD-3-Clause),
+requests (Apache-2.0), matplotlib (its PSF-based license), pytest (MIT), and
+hatchling (MIT). Dependency licenses and notices remain applicable; see each
+distribution for the authoritative terms. `uv.lock` records resolved versions.
+We do not claim to have audited every transitive dependency. The project does
+not import typing-extensions directly; dependencies may require it.
 
-| Package | License | Used for | Ships to Qollab? |
-| --- | --- | --- | --- |
-| `qiskit >=2.5.2,<3.0.0` | Apache-2.0 | QAOA circuits | yes (`requirements.txt`) |
-| `qiskit-aer ==0.17.2` | Apache-2.0 | local exact statevector training/simulation | no — Qollab provides Aer via its PQCA library entry |
-| `numpy >=1.26` | BSD-3-Clause | numerics everywhere | runtime built-in, not pinned for Qollab |
-| `scipy >=1.12` | BSD-3-Clause | SLSQP continuous baseline, COBYLA training | runtime built-in, not pinned for Qollab |
-| `pandas >=2.0` | BSD-3-Clause | data handling | yes (`requirements.txt`) |
-| `requests >=2.31` | Apache-2.0 | data pull only | no — demo ships CSVs |
-| `matplotlib >=3.8` | Matplotlib (BSD-compatible PSF-based) | figures only | no — demo ships pre-rendered figures |
-| `pytest >=9` (+ `pluggy`, `pygments`, `iniconfig`, all MIT) | MIT | tests only | no |
-| `hatchling` | MIT | build backend only | no |
+Local fetching, optimization and tests use libraries that the Qollab demo
+does not directly import. The demo uses Qiskit and NumPy from source-tree
+imports, without an editable install or uv on Qollab.
 
-Python 3.14 itself is under the PSF License. Our code and docs are MIT
-licensed (see `LICENSE`).
+## Data provenance and rights
 
-## Data provenance
+Yahoo Finance's public chart endpoint supplied daily adjusted close prices
+for the twenty tickers listed in the README over 2015–2024. Monthly simple
+returns, metadata and optimization results are derived from those prices.
+The fetch pattern was adapted from the team's MIT-licensed QRC hackathon
+repository.
 
-- Price data: daily adjusted closes for 20 tickers (SPY, QQQ, IWM, DIA, XLK,
-  XLF, XLV, XLE, XLI, XLP, XLU, TLT, LQD, HYG, GLD, USO, EFA, EEM, VNQ,
-  BTC-USD), Jan 2015–Dec 2024, fetched from Yahoo Finance's keyless public
-  chart API (`scripts/pull_data.py`, `requests` only — no `yfinance`).
-- Derived artifacts committed for reproducibility: `data/prices_daily.csv`,
-  `data/returns_monthly.csv` (month-end log returns — the mu/Sigma source),
-  `data/universe.json`. Yahoo data is used for non-commercial research under
-  Yahoo's terms; only our derived datasets are redistributed, under MIT
-  alongside the code.
-- The fetch pattern (chart-API + `requests`, no scraper) was adapted from our
-  own MIT-licensed QRC hackathon repo (same team, same event).
+Public accessibility does not grant an MIT license to market data. The MIT
+license applies to our code and documentation, not Yahoo data or third-party
+data-provider rights. Permission to redistribute the bundled market-data
+snapshot has not been established here. Users and submitters must check the
+applicable terms before redistributing or using it; derived data should not
+be assumed exempt from those terms.
 
-## References followed (no code copied)
+## Methods and prior work
 
-The implementation was written from the mathematical formulations in these
-works; no external code, circuit, or repository was copied or forked:
+The methods are standard: Markowitz mean–variance selection, binary-to-Ising
+mapping, QAOA, continuous relaxation, enumeration and swap local search.
+Background references include Markowitz, “Portfolio Selection” (1952), and
+Farhi, Goldstone and Gutmann, “A Quantum Approximate Optimization Algorithm,”
+arXiv:1411.4028 (2014). These are background references, not claims that the
+implementation reproduces a particular published benchmark. No claim of
+first-of-its-kind implementation is made.
 
-- H. Markowitz, "Portfolio Selection," *J. Finance* 7(1), 1952 —
-  mean-variance objective and the cardinality-constrained QUBO.
-- E. Farhi, J. Goldstone, S. Gutmann, "A Quantum Approximate Optimization
-  Algorithm," arXiv:1411.4028 (2014) — the QAOA ansatz and angle structure.
-- J. Hodson et al., "Portfolio rebalancing experiments using the Quantum
-  Alternating Operator Ansatz," arXiv:1911.05296 (2019) — QAOA applied to
-  portfolio problems; problem-context precedent, implementation ours.
-
-## Prior / external code
-
-None, except the team's own MIT-licensed fetch pattern noted above. The QUBO
-construction, Ising mapping, brute-force and continuous baselines, QAOA
-circuit, training loop, demo entry point, tests and docs were all written
-during the hackathon build window for this project.
-
-## Attribution
+This project was created separately from the team's QRC project during this
+hackathon session. Local simulation results are not quantum hardware results.
+Successful Qollab execution must be verified separately. This is a research
+prototype, not investment advice or evidence of quantum advantage.
 
 This effort is supported by Qollab & IonQ.

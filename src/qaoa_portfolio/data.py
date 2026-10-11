@@ -37,12 +37,12 @@ def load_prices() -> pd.DataFrame:
 
 
 def load_returns() -> pd.DataFrame:
-    """Load month-end log returns.
+    """Load month-end simple returns.
 
     Returns
     -------
     pd.DataFrame
-        Monthly ``log(P_t / P_{t-1})`` indexed by month, columns in
+        Monthly ``P_t / P_{t-1} - 1`` indexed by month, columns in
         :data:`TICKERS` order.
     """
     return pd.read_csv(RETURNS_CSV, parse_dates=["date"], index_col="date")[TICKERS]
@@ -65,7 +65,7 @@ def mean_and_cov(returns: pd.DataFrame | None = None) -> tuple[pd.Series, pd.Dat
     Parameters
     ----------
     returns:
-        Monthly log returns. Loaded from disk when omitted.
+        Monthly simple returns. Loaded from disk when omitted.
 
     Returns
     -------

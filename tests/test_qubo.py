@@ -34,7 +34,7 @@ def test_qubo_matches_direct_objective() -> None:
     rng = np.random.default_rng(1)
     for _ in range(20):
         x = rng.integers(0, 2, size=len(mu)).astype(float)
-        direct = (0.5 * x @ Sigma @ x - mu @ x
+        direct = (0.5 * x @ Sigma @ x / inst.cardinality**2 - mu @ x / inst.cardinality
                   + inst.penalty * (x.sum() - inst.cardinality) ** 2)
         assert np.isclose(float(np.asarray(qubo_energy(x, inst.Q, inst.offset))),
                           direct, rtol=1e-9)

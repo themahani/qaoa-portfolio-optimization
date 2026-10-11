@@ -1,5 +1,4 @@
-# Qollab runtime only (browser Pyodide). NumPy, SciPy and pandas ship with the
-# runtime or load on import: pinning them to other versions stops the run.
-# Local development uses pyproject.toml and uv instead.
+# Qollab runtime only. NumPy is supplied by the runtime. No local data,
+# training or editable-package dependencies are needed by main.py.
+# Local development uses pyproject.toml and uv.lock instead.
 qiskit>=2.5.2,<3.0.0
-pandas>=2.0

@@ -20,7 +20,8 @@ from src.qaoa_portfolio.circuit import build_qaoa_circuit, counts_to_portfolios
 
 def _true_cost(x: np.ndarray, mu: np.ndarray, Sigma: np.ndarray, q: float) -> float:
     """Unpenalized Markowitz cost of one binary portfolio."""
-    return float(q * x @ Sigma @ x - mu @ x)
+    w = x / x.sum()
+    return float(q * w @ Sigma @ w - mu @ w)
 
 
 def main(shots: int = 4096, depth: int = 2):
@@ -54,13 +55,21 @@ def main(shots: int = 4096, depth: int = 2):
 
     scored = []
     for portfolio, count in decoded:
+        if portfolio.sum() != k:
+            continue
         cost = _true_cost(portfolio, mu, Sigma, q)
         scored.append((cost, int(portfolio.sum()), count, portfolio))
     scored.sort(key=lambda item: item[0])
     feasible = [s for s in scored if s[1] == k]
-    feas_rate = sum(s[2] for s in feasible) / shots
+    feas_rate = sum(s[2] for s in feasible) / sum(result.get_counts().values())
 
-    print(f"\nTop sampled portfolios (true Markowitz cost, lower is better):")
+    if not feasible:
+        print("No feasible portfolio found: no cost comparison is valid for this run.")
+        print("Exact feasible optimum:", demo["exact"]["true_cost"])
+        print("This effort is supported by Qollab & IonQ.")
+        return
+
+    print(f"\nTop feasible sampled portfolios (Markowitz cost, lower is better):")
     for cost, card, count, portfolio in scored[:5]:
         names = [t for t, b in zip(demo["assets"], portfolio) if b]
         flag = "feasible" if card == k else f"|x|={card}, penalized"
@@ -73,6 +82,9 @@ def main(shots: int = 4096, depth: int = 2):
     print(f"\nBest sampled this run : {best[0]:+.6f}  {best_names}")
     print(f"Exact feasible optimum: {opt['true_cost']:+.6f}  {opt['portfolio']}")
     print(f"Classical top-{k} rounding : {topk['true_cost']:+.6f}  {topk['portfolio']}")
+    for name, heuristic in demo.get("heuristics", {}).items():
+        print(f"Classical {name}: {heuristic['true_cost']:+.6f} "
+              f"({heuristic['objective_evaluations']} objective evaluations)")
     print(f"Feasible-sample rate  : {feas_rate:.1%} of {shots} shots "
           f"(precomputed: {entry['metrics']['p_feasible']:.1%} exact)")
     if best[1] == k and best[0] < topk["true_cost"]:
@@ -85,6 +97,8 @@ def main(shots: int = 4096, depth: int = 2):
     for p, d in demo["depths"].items():
         m = d["metrics"]
         print(f"  p={p}: expected E={m['expected_energy']:+.4f}  "
-              f"P(optimal)={m['p_optimal']:.3f}  "
-              f"best of {m['shots']} shots={m['best_sampled_cost']:+.6f}")
+              f"P(optimal)={m['p_optimal']:.6g}  "
+              f"best feasible of {m['shots']} shots={m['best_sampled_cost']}")
+        print(f"    local training: {d.get('train_evals', 'not recorded')} expectations, "
+              f"{d['train_seconds']:.1f} seconds; not included in the shot budget")
     print("\nThis effort is supported by Qollab & IonQ.")

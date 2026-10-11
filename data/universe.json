@@ -7,122 +7,124 @@
     "SPY": {
       "name": "SPDR S&P 500 ETF",
       "category": "us-equity",
-      "ann_mean": 0.126258,
-      "ann_vol": 0.153401
+      "ann_mean": 0.1386257425210084,
+      "ann_vol": 0.1533851191369661
     },
     "QQQ": {
       "name": "Invesco QQQ (Nasdaq 100)",
       "category": "us-equity",
-      "ann_mean": 0.171246,
-      "ann_vol": 0.184869
+      "ann_mean": 0.18954618756302521,
+      "ann_vol": 0.1858194559290297
     },
     "IWM": {
       "name": "iShares Russell 2000 (small-cap)",
       "category": "us-equity",
-      "ann_mean": 0.078645,
-      "ann_vol": 0.209146
+      "ann_mean": 0.10052288873949579,
+      "ann_vol": 0.2079257693013937
     },
     "DIA": {
       "name": "SPDR Dow Jones Industrial Average",
       "category": "us-equity",
-      "ann_mean": 0.112544,
-      "ann_vol": 0.154184
+      "ann_mean": 0.12491868201680673,
+      "ann_vol": 0.1547712638059569
     },
     "XLK": {
       "name": "Technology Select Sector SPDR",
       "category": "sector",
-      "ann_mean": 0.190295,
-      "ann_vol": 0.18942
+      "ann_mean": 0.20977739596638656,
+      "ann_vol": 0.1909021505472668
     },
     "XLF": {
       "name": "Financial Select Sector SPDR",
       "category": "sector",
-      "ann_mean": 0.115117,
-      "ann_vol": 0.199005
+      "ann_mean": 0.13524744201680675,
+      "ann_vol": 0.19756658729689489
     },
     "XLV": {
       "name": "Health Care Select Sector SPDR",
       "category": "sector",
-      "ann_mean": 0.085638,
-      "ann_vol": 0.143798
+      "ann_mean": 0.09624385915966385,
+      "ann_vol": 0.14435543457747477
     },
     "XLE": {
       "name": "Energy Select Sector SPDR",
       "category": "sector",
-      "ann_mean": 0.053309,
-      "ann_vol": 0.301075
+      "ann_mean": 0.09805544571428568,
+      "ann_vol": 0.2995959784630332
     },
     "XLI": {
       "name": "Industrial Select Sector SPDR",
       "category": "sector",
-      "ann_mean": 0.107519,
-      "ann_vol": 0.187721
+      "ann_mean": 0.1254860208403361,
+      "ann_vol": 0.18738159700878387
     },
     "XLP": {
       "name": "Consumer Staples Select Sector SPDR",
       "category": "sector",
-      "ann_mean": 0.076539,
-      "ann_vol": 0.12767
+      "ann_mean": 0.0848919468907563,
+      "ann_vol": 0.12796517624457174
     },
     "XLU": {
       "name": "Utilities Select Sector SPDR",
       "category": "sector",
-      "ann_mean": 0.078246,
-      "ann_vol": 0.155554
+      "ann_mean": 0.09051304941176469,
+      "ann_vol": 0.1554234655951279
     },
     "TLT": {
       "name": "iShares 20+ Year Treasury Bond",
       "category": "bonds",
-      "ann_mean": -0.020952,
-      "ann_vol": 0.137681
+      "ann_mean": -0.011529931764705886,
+      "ann_vol": 0.13801010265274194
     },
     "LQD": {
       "name": "iShares Investment Grade Corporate Bond",
       "category": "bonds",
-      "ann_mean": 0.018845,
-      "ann_vol": 0.083554
+      "ann_mean": 0.022324159663865546,
+      "ann_vol": 0.0836275805477086
     },
     "HYG": {
       "name": "iShares High Yield Corporate Bond",
       "category": "bonds",
-      "ann_mean": 0.039105,
-      "ann_vol": 0.077777
+      "ann_mean": 0.04215553613445379,
+      "ann_vol": 0.07722667182452875
     },
     "GLD": {
       "name": "SPDR Gold Shares",
       "category": "commodities",
-      "ann_mean": 0.06793,
-      "ann_vol": 0.137693
+      "ann_mean": 0.0776102339495798,
+      "ann_vol": 0.1393005001476473
     },
     "USO": {
       "name": "United States Oil Fund",
       "category": "commodities",
-      "ann_mean": -0.06403,
-      "ann_vol": 0.444978
+      "ann_mean": 0.024496689075630247,
+      "ann_vol": 0.38947433586463126
     },
     "EFA": {
       "name": "iShares MSCI EAFE (developed ex-US)",
       "category": "international",
-      "ann_mean": 0.050497,
-      "ann_vol": 0.15302
+      "ann_mean": 0.0622166379831933,
+      "ann_vol": 0.15293528148525187
     },
     "EEM": {
       "name": "iShares MSCI Emerging Markets",
       "category": "international",
-      "ann_mean": 0.029257,
-      "ann_vol": 0.172643
+      "ann_mean": 0.0440817831932773,
+      "ann_vol": 0.17283810401606292
     },
     "VNQ": {
       "name": "Vanguard Real Estate (REIT)",
       "category": "real-estate",
-      "ann_mean": 0.043082,
-      "ann_vol": 0.183524
+      "ann_mean": 0.05975447798319328,
+      "ann_vol": 0.18176337165121498
     },
     "BTC-USD": {
       "name": "Bitcoin",
       "category": "crypto",
-      "ann_mean": 0.611387,
-      "ann_vol": 0.691166
+      "ann_mean": 0.8777931186554624,
+      "ann_vol": 0.7438456974632575
     }
-  }
+  },
+  "return_type": "monthly simple adjusted-price returns",
+  "summary_window": "2015\u20132024 descriptive only; training uses 2015\u20132020"
 }

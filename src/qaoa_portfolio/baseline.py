@@ -6,9 +6,9 @@ Two complementary baselines, both evaluated against the same QUBO instance:
   ``2^N`` states (chunked evaluation, ~seconds for N=20).
 - :func:`best_feasible_exact`: global optimum over the ``C(N, k)`` feasible
   (exactly-``k``) portfolios, by direct enumeration.
-- :func:`continuous_markowitz` + :func:`topk_portfolio`: long-only,
-  fully-invested quadratic program solved with SLSQP, rounded to the top-``k``
-  assets by weight — the realistic "classical quant" reference.
+- :func:`continuous_markowitz` + :func:`topk_portfolio`: capped, long-only,
+  fully-invested relaxation solved with SLSQP, rounded to the top-``k``
+  assets by weight. This is one heuristic, not the strongest classical method.
 """
 
 from __future__ import annotations
@@ -45,6 +45,8 @@ def brute_force(
     """
     Q = np.asarray(Q, dtype=float)
     n = Q.shape[0]
+    if block <= 0:
+        raise ValueError("block must be positive")
     if n > 24:
         raise ValueError(f"N={n} exceeds the 24-variable brute-force limit")
     total = 1 << n
@@ -119,23 +121,29 @@ def binary_objective(
     Returns
     -------
     float
-        ``q * x^T Sigma x - mu^T x`` (no cardinality penalty).
+        ``q * w^T Sigma w - mu^T w`` with ``w = x / sum(x)``.
     """
     x = np.asarray(x, dtype=float)
     sigma_arr = np.asarray(Sigma, dtype=float)
     sigma_arr = 0.5 * (sigma_arr + sigma_arr.T)
-    return float(risk_aversion * x @ sigma_arr @ x - np.asarray(mu, dtype=float) @ x)
+    k = int(x.sum())
+    if k == 0:
+        raise ValueError("A portfolio must select at least one asset")
+    w = x / k
+    return float(risk_aversion * w @ sigma_arr @ w - np.asarray(mu, dtype=float) @ w)
 
 
 def continuous_markowitz(
     mu: pd.Series | np.ndarray,
     Sigma: pd.DataFrame | np.ndarray,
     risk_aversion: float,
+    cardinality: int = 1,
 ) -> np.ndarray:
     """Solve the long-only, fully-invested continuous Markowitz problem.
 
     Minimizes ``q * w^T Sigma w - mu^T w`` subject to ``sum(w) = 1`` and
-    ``w >= 0`` with SLSQP, starting from the equal-weight portfolio.
+    ``0 <= w <= 1/cardinality`` with SLSQP. For the selection problem this
+    is its continuous relaxation, not an unconstrained investment baseline.
 
     Parameters
     ----------
@@ -145,6 +153,9 @@ def continuous_markowitz(
         Return covariance matrix.
     risk_aversion:
         Risk-aversion factor ``q``.
+
+    cardinality:
+        Weight cap denominator; pass the binary problem's selected count.
 
     Returns
     -------
@@ -164,7 +175,7 @@ def continuous_markowitz(
         fun=lambda w: risk_aversion * w @ sigma_arr @ w - mu_arr @ w,
         x0=np.full(n, 1.0 / n),
         method="SLSQP",
-        bounds=[(0.0, 1.0)] * n,
+        bounds=[(0.0, 1.0 / cardinality)] * n,
         constraints={"type": "eq", "fun": lambda w: w.sum() - 1.0},
         options={"maxiter": 1000, "ftol": 1e-12},
     )
@@ -190,6 +201,8 @@ def topk_portfolio(weights: np.ndarray, cardinality: int) -> np.ndarray:
         Binary vector with ones at the ``k`` largest weights.
     """
     weights = np.asarray(weights, dtype=float)
+    if not 1 <= cardinality <= len(weights):
+        raise ValueError("cardinality must be between one and the asset count")
     x = np.zeros(weights.shape[0], dtype=np.int8)
     x[np.argsort(weights)[-cardinality:]] = 1
     return x

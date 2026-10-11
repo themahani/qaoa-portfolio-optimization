@@ -1,0 +1,63 @@
+{
+  "train_end": "2020-12-31",
+  "validation": "2021\u20132022 reserved; not used to tune this fixed configuration",
+  "test": "2023\u20132024",
+  "cost_per_absolute_weight": 0.001,
+  "rebalancing": "monthly; fixed equal-weight selected assets",
+  "results": {
+    "exact": {
+      "net_return": 1.2131038213020662,
+      "annualized_volatility": 0.18773061218921347,
+      "max_drawdown": -0.0681382243013463,
+      "absolute_weight_turnover": 1.9141550721723983
+    },
+    "rounded": {
+      "net_return": 1.2131038213020662,
+      "annualized_volatility": 0.18773061218921347,
+      "max_drawdown": -0.0681382243013463,
+      "absolute_weight_turnover": 1.9141550721723983
+    },
+    "random_feasible": {
+      "net_return": 1.1153106405851871,
+      "annualized_volatility": 0.18060292117026633,
+      "max_drawdown": -0.06838581213794537,
+      "absolute_weight_turnover": 1.942402832534369
+    },
+    "random_plus_swaps": {
+      "net_return": 1.2131038213020662,
+      "annualized_volatility": 0.18773061218921347,
+      "max_drawdown": -0.0681382243013463,
+      "absolute_weight_turnover": 1.9141550721723983
+    },
+    "rounded_plus_swaps": {
+      "net_return": 1.2131038213020662,
+      "annualized_volatility": 0.18773061218921347,
+      "max_drawdown": -0.0681382243013463,
+      "absolute_weight_turnover": 1.9141550721723983
+    },
+    "greedy": {
+      "net_return": 1.2131038213020662,
+      "annualized_volatility": 0.18773061218921347,
+      "max_drawdown": -0.0681382243013463,
+      "absolute_weight_turnover": 1.9141550721723983
+    },
+    "qaoa_p1": {
+      "net_return": 1.0867933871140671,
+      "annualized_volatility": 0.1828458404292044,
+      "max_drawdown": -0.07673584062808958,
+      "absolute_weight_turnover": 2.0038549188147745
+    },
+    "qaoa_p2": {
+      "net_return": 1.2600786358762943,
+      "annualized_volatility": 0.18837010477734592,
+      "max_drawdown": -0.06687428249037142,
+      "absolute_weight_turnover": 1.9399779732606295
+    },
+    "qaoa_p3": {
+      "net_return": 0.9126422734713788,
+      "annualized_volatility": 0.1757229529527391,
+      "max_drawdown": -0.06899299567969752,
+      "absolute_weight_turnover": 1.9914448435305785
+    }
+  }
+}

@@ -4,7 +4,8 @@ Loads monthly returns, builds the cardinality-constrained QUBO, then runs:
 
 - brute-force global optimum over all ``2^N`` states,
 - exact optimum over the ``C(N, k)`` feasible (exactly-``k``) portfolios,
-- continuous long-only Markowitz via SLSQP, plus its top-``k`` rounding.
+- capped continuous Markowitz relaxation, rounding, random feasible sampling,
+  greedy selection and swap local searches.
 
 Results are printed as a table and saved to ``data/classical_baseline.json``
 — the ground truth the QAOA circuit will be scored against.
@@ -29,6 +30,7 @@ from qaoa_portfolio.baseline import (
 )
 from qaoa_portfolio.data import TICKERS, load_returns, mean_and_cov
 from qaoa_portfolio.qubo import build_qubo
+from qaoa_portfolio.heuristics import compare_heuristics
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 OUT = ROOT / "data" / "classical_baseline.json"
@@ -49,10 +51,11 @@ def run(cardinality: int, risk_aversion: float) -> dict:
     dict
         JSON-serializable results: QUBO parameters, exact optima,
         continuous weights and the top-``k`` rounding with its
-        approximation ratio against the feasible optimum.
+        relative objective gap against the feasible optimum.
     """
     returns = load_returns()
-    mu, Sigma = mean_and_cov(returns)
+    training = returns.loc[:"2020-12-31"]
+    mu, Sigma = mean_and_cov(training)
     instance = build_qubo(
         mu, Sigma,
         risk_aversion=risk_aversion,
@@ -69,7 +72,7 @@ def run(cardinality: int, risk_aversion: float) -> dict:
     feas_x, feas_e = best_feasible_exact(instance.Q, instance.offset, cardinality)
     feas_cost = binary_objective(feas_x, mu, Sigma, risk_aversion)
 
-    weights = continuous_markowitz(mu, Sigma, risk_aversion)
+    weights = continuous_markowitz(mu, Sigma, risk_aversion, cardinality)
     cont_cost = float(risk_aversion * weights @ np.asarray(Sigma) @ weights
                       - np.asarray(mu) @ weights)
     rounded = topk_portfolio(weights, cardinality)
@@ -77,6 +80,8 @@ def run(cardinality: int, risk_aversion: float) -> dict:
     # Costs are return-dominated (negative), so report the gap against the
     # feasible optimum rather than a ratio of negatives.
     relative_gap = (rounded_cost - feas_cost) / abs(feas_cost)
+    heuristics = compare_heuristics(np.asarray(mu), np.asarray(Sigma),
+                                   risk_aversion, cardinality, rounded)
 
     tickers = np.array(TICKERS)
     print("\nexact penalized optimum : "
@@ -94,7 +99,9 @@ def run(cardinality: int, risk_aversion: float) -> dict:
         "risk_aversion": risk_aversion,
         "penalty": instance.penalty,
         "offset": instance.offset,
-        "months": len(returns),
+        "months": len(training), "training_end": "2020-12-31",
+        "mu": mu.tolist(), "Sigma": Sigma.to_numpy().tolist(),
+        "heuristics": heuristics,
         "exact": {"energy": exact_e, "cardinality": int(exact_x.sum()),
                   "portfolio": [t for t, b in zip(TICKERS, exact_x) if b],
                   "states_evaluated": n_eval, "seconds": seconds},

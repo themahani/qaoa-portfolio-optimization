@@ -5,7 +5,7 @@ Sources (all keyless, free):
 
 Output (all well under the 2 MB per-file Qollab cap):
   - ``data/prices_daily.csv``: daily adjusted closes, 2015-01-01 to 2024-12-31.
-  - ``data/returns_monthly.csv``: month-end log returns derived from the above.
+  - ``data/returns_monthly.csv``: month-end simple returns derived from the above.
   - ``data/universe.json``: ticker metadata plus per-asset summary statistics.
 
 The 20 tickers map one-to-one onto 20 qubits in the QAOA circuit, leaving
@@ -160,12 +160,13 @@ def pull_prices(tickers: list[str], start: datetime, end: datetime) -> pd.DataFr
     prices = prices.ffill(limit=5).dropna()
     # Drop the partial trailing month (24/7 crypto adds days past the last
     # month-end close of exchange-traded funds).
-    prices = prices.loc[: "2024-12-31"]
+    prices = prices.loc[(prices.index >= start.replace(tzinfo=None))
+                        & (prices.index < end.replace(tzinfo=None))]
     return prices.round(4)
 
 
 def to_monthly_returns(prices: pd.DataFrame) -> pd.DataFrame:
-    """Convert daily closes to month-end log returns.
+    """Convert daily closes to month-end simple returns.
 
     Parameters
     ----------
@@ -175,11 +176,11 @@ def to_monthly_returns(prices: pd.DataFrame) -> pd.DataFrame:
     Returns
     -------
     pd.DataFrame
-        ``log(P_t / P_{t-1})`` on month-end closes; the first (NaN) month
+        ``P_t / P_{t-1} - 1`` on month-end closes; the first (NaN) month
         is dropped.
     """
     monthly = prices.resample("ME").last()
-    return np.log(monthly / monthly.shift(1)).dropna().round(6)
+    return (monthly / monthly.shift(1) - 1.0).dropna().round(8)
 
 
 def main() -> None:
@@ -199,6 +200,8 @@ def main() -> None:
         "end": str(prices.index.max().date()),
         "trading_days": len(prices),
         "months": len(returns),
+        "return_type": "monthly simple adjusted-price returns",
+        "summary_window": "2015–2024 descriptive only; training uses 2015–2020",
         "assets": {
             symbol: {
                 "name": TICKERS[symbol][0],

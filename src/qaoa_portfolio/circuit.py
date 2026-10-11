@@ -16,10 +16,6 @@ import time
 
 import numpy as np
 from qiskit import QuantumCircuit
-from qiskit_aer import AerSimulator
-from scipy.optimize import minimize
-
-_STATEVECTOR_BACKEND = AerSimulator(method="statevector")
 
 
 def build_qaoa_circuit(
@@ -124,10 +120,12 @@ def state_probabilities(circuit: QuantumCircuit) -> np.ndarray:
         ``|amplitude|^2`` per computational basis state (Qiskit ordering:
         outcome bit ``i`` of index ``s`` is qubit ``i``).
     """
+    from qiskit_aer import AerSimulator
+
     stripped = circuit.remove_final_measurements(inplace=False) or circuit
     snapshot = stripped.copy()
     snapshot.save_statevector()
-    state = _STATEVECTOR_BACKEND.run(snapshot).result().get_statevector()
+    state = AerSimulator(method="statevector").run(snapshot).result().get_statevector()
     return np.abs(np.asarray(state)) ** 2
 
 
@@ -194,6 +192,8 @@ def train_qaoa(
         ``gammas``, ``betas``, ``expected_energy``, ``evals`` and ``seconds``
         of the best restart.
     """
+    from scipy.optimize import minimize
+
     h = np.asarray(h, dtype=float)
     J = np.asarray(J, dtype=float)
     energies = all_ising_energies(h, J, offset)

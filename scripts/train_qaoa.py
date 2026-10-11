@@ -91,9 +91,10 @@ def evaluate_depth(
     rng = np.random.default_rng(seed)
     draws = rng.choice(len(probs), size=SHOT_EVAL, p=probs)
     # Penalized energy minus the cardinality term = unpenalized true cost.
-    true_costs = energies[draws] - penalty * (bit_sums[draws] - cardinality) ** 2
-    best_draw = draws[int(np.argmin(true_costs))]
-    best_bits = np.array([(best_draw >> i) & 1 for i in range(len(h))])
+    valid = draws[feasible_mask[draws]]
+    best_draw = int(valid[np.argmin(energies[valid])]) if len(valid) else None
+    best_bits = (np.array([(best_draw >> i) & 1 for i in range(len(h))])
+                 if best_draw is not None else None)
     return {
         "expected_energy": float(probs @ energies),
         "p_optimal": float(probs[opt_index]),
@@ -101,10 +102,14 @@ def evaluate_depth(
         "shots": SHOT_EVAL,
         "feasible_rate": float(feasible_mask[draws].mean()),
         "hit_optimal": bool(opt_index in draws),
-        "best_sampled_cost": float(true_costs.min()),
-        "best_sampled_cardinality": int(best_bits.sum()),
-        "best_sampled_portfolio": [t for t, b in zip(TICKERS, best_bits) if b],
-        "best_sampled_true_cost_check": binary_objective(best_bits, mu, Sigma, risk_aversion),
+        "best_sampled_cost": float(energies[best_draw]) if best_draw is not None else None,
+        "mean_feasible_cost": float(energies[valid].mean()) if len(valid) else None,
+        "conditional_expected_cost": (float(probs[feasible_mask] @ energies[feasible_mask]
+                                             / probs[feasible_mask].sum())
+                                      if probs[feasible_mask].sum() > 0 else None),
+        "best_sampled_cardinality": cardinality if best_bits is not None else None,
+        "best_sampled_portfolio": ([t for t, b in zip(TICKERS, best_bits) if b]
+                                   if best_bits is not None else []),
     }
 
 
@@ -121,7 +126,7 @@ def main() -> None:
     k = baseline["cardinality"]
     q = baseline["risk_aversion"]
     penalty = baseline["penalty"]
-    mu_series, sigma_df = mean_and_cov(load_returns())
+    mu_series, sigma_df = mean_and_cov(load_returns().loc[:baseline["training_end"]])
     mu, Sigma = np.asarray(mu_series), np.asarray(sigma_df)
     instance = build_qubo(mu_series, sigma_df, risk_aversion=q,
                           cardinality=k, penalty=penalty, assets=TICKERS)
@@ -152,25 +157,24 @@ def main() -> None:
                                  opt_index, args.seed)
         print(f"  expected E={result['expected_energy']:.6f} "
               f"({result['evals']} evals, {result['seconds']:.0f}s)  "
-              f"P(opt)={metrics['p_optimal']:.3f}  P(feasible)={metrics['p_feasible']:.3f}")
-        print(f"  {SHOT_EVAL} shots: best true cost={metrics['best_sampled_cost']:.6f} "
+              f"P(opt)={metrics['p_optimal']:.6g}  P(feasible)={metrics['p_feasible']:.3f}")
+        print(f"  {SHOT_EVAL} shots: best feasible cost={metrics['best_sampled_cost']} "
               f"(opt={baseline['feasible_exact']['true_cost']:.6f}, "
               f"top-k={baseline['topk_rounded']['true_cost']:.6f}), "
               f"feasible rate={metrics['feasible_rate']:.0%}, "
               f"hit optimal={metrics['hit_optimal']}")
         depths[str(depth)] = {"angles": {"gammas": result["gammas"],
                                          "betas": result["betas"]},
-                              "train_seconds": result["seconds"],
+                              "train_seconds": result["seconds"], "train_evals": result["evals"],
                               "circuit": stats, "metrics": metrics}
 
     payload = {
         "n_assets": n, "assets": TICKERS, "cardinality": k,
         "risk_aversion": q, "penalty": penalty, "ising_offset": ising_offset,
-        "mu": [round(float(v), 6) for v in mu],
-        "Sigma": [[round(float(v), 8) for v in row] for row in Sigma],
-        "h": [round(float(v), 8) for v in h],
-        "J": [[round(float(v), 8) for v in row] for row in J],
+        "mu": mu.tolist(), "Sigma": Sigma.tolist(),
+        "h": h.tolist(), "J": J.tolist(),
         "exact": baseline["feasible_exact"], "topk_rounded": baseline["topk_rounded"],
+        "heuristics": baseline["heuristics"], "training_end": baseline["training_end"],
         "depths": depths,
     }
     OUT.parent.mkdir(exist_ok=True)
