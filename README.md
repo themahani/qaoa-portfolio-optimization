@@ -116,4 +116,5 @@ top-`k` rounding. No training happens on Qollab; Qiskit + NumPy only.
 
 ## License
 
-MIT. See [LICENSE](LICENSE).
+MIT. See [LICENSE](LICENSE). Provenance, dependency licenses and references:
+[DISCLOSURES.md](DISCLOSURES.md).
