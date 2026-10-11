@@ -1,0 +1,130 @@
+{
+  "basis": [
+    "h",
+    "rz",
+    "cx"
+  ],
+  "optimization_level": 0,
+  "connectivity": "all-to-all; no routing",
+  "trained_circuits": [
+    {
+      "n_assets": 20,
+      "layers": 1,
+      "qubits": 20,
+      "depth_with_measurement": 117,
+      "counts": {
+        "cx": 380,
+        "rz": 230,
+        "h": 60,
+        "measure": 20
+      },
+      "unitary_gates": 670
+    },
+    {
+      "n_assets": 20,
+      "layers": 2,
+      "qubits": 20,
+      "depth_with_measurement": 181,
+      "counts": {
+        "cx": 760,
+        "rz": 460,
+        "h": 100,
+        "measure": 20
+      },
+      "unitary_gates": 1320
+    },
+    {
+      "n_assets": 20,
+      "layers": 3,
+      "qubits": 20,
+      "depth_with_measurement": 245,
+      "counts": {
+        "cx": 1140,
+        "rz": 690,
+        "h": 140,
+        "measure": 20
+      },
+      "unitary_gates": 1970
+    }
+  ],
+  "synthetic_p2_scaling": [
+    {
+      "n_assets": 4,
+      "layers": 2,
+      "qubits": 4,
+      "depth_with_measurement": 37,
+      "counts": {
+        "rz": 28,
+        "cx": 24,
+        "h": 20,
+        "measure": 4
+      },
+      "unitary_gates": 72
+    },
+    {
+      "n_assets": 8,
+      "layers": 2,
+      "qubits": 8,
+      "depth_with_measurement": 73,
+      "counts": {
+        "cx": 112,
+        "rz": 88,
+        "h": 40,
+        "measure": 8
+      },
+      "unitary_gates": 240
+    },
+    {
+      "n_assets": 12,
+      "layers": 2,
+      "qubits": 12,
+      "depth_with_measurement": 109,
+      "counts": {
+        "cx": 264,
+        "rz": 180,
+        "h": 60,
+        "measure": 12
+      },
+      "unitary_gates": 504
+    },
+    {
+      "n_assets": 16,
+      "layers": 2,
+      "qubits": 16,
+      "depth_with_measurement": 145,
+      "counts": {
+        "cx": 480,
+        "rz": 304,
+        "h": 80,
+        "measure": 16
+      },
+      "unitary_gates": 864
+    },
+    {
+      "n_assets": 20,
+      "layers": 2,
+      "qubits": 20,
+      "depth_with_measurement": 181,
+      "counts": {
+        "cx": 760,
+        "rz": 460,
+        "h": 100,
+        "measure": 20
+      },
+      "unitary_gates": 1320
+    },
+    {
+      "n_assets": 24,
+      "layers": 2,
+      "qubits": 24,
+      "depth_with_measurement": 217,
+      "counts": {
+        "cx": 1104,
+        "rz": 648,
+        "h": 120,
+        "measure": 24
+      },
+      "unitary_gates": 1872
+    }
+  ]
+}
