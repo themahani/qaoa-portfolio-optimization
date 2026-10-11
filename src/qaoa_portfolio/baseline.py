@@ -20,7 +20,7 @@ import numpy as np
 import pandas as pd
 from scipy.optimize import minimize
 
-from qaoa_portfolio.qubo import qubo_energy
+from .qubo import qubo_energy
 
 
 def brute_force(
