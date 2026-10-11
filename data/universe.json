@@ -1,0 +1,128 @@
+{
+  "start": "2015-01-02",
+  "end": "2024-12-31",
+  "trading_days": 3652,
+  "months": 119,
+  "assets": {
+    "SPY": {
+      "name": "SPDR S&P 500 ETF",
+      "category": "us-equity",
+      "ann_mean": 0.126258,
+      "ann_vol": 0.153401
+    },
+    "QQQ": {
+      "name": "Invesco QQQ (Nasdaq 100)",
+      "category": "us-equity",
+      "ann_mean": 0.171246,
+      "ann_vol": 0.184869
+    },
+    "IWM": {
+      "name": "iShares Russell 2000 (small-cap)",
+      "category": "us-equity",
+      "ann_mean": 0.078645,
+      "ann_vol": 0.209146
+    },
+    "DIA": {
+      "name": "SPDR Dow Jones Industrial Average",
+      "category": "us-equity",
+      "ann_mean": 0.112544,
+      "ann_vol": 0.154184
+    },
+    "XLK": {
+      "name": "Technology Select Sector SPDR",
+      "category": "sector",
+      "ann_mean": 0.190295,
+      "ann_vol": 0.18942
+    },
+    "XLF": {
+      "name": "Financial Select Sector SPDR",
+      "category": "sector",
+      "ann_mean": 0.115117,
+      "ann_vol": 0.199005
+    },
+    "XLV": {
+      "name": "Health Care Select Sector SPDR",
+      "category": "sector",
+      "ann_mean": 0.085638,
+      "ann_vol": 0.143798
+    },
+    "XLE": {
+      "name": "Energy Select Sector SPDR",
+      "category": "sector",
+      "ann_mean": 0.053309,
+      "ann_vol": 0.301075
+    },
+    "XLI": {
+      "name": "Industrial Select Sector SPDR",
+      "category": "sector",
+      "ann_mean": 0.107519,
+      "ann_vol": 0.187721
+    },
+    "XLP": {
+      "name": "Consumer Staples Select Sector SPDR",
+      "category": "sector",
+      "ann_mean": 0.076539,
+      "ann_vol": 0.12767
+    },
+    "XLU": {
+      "name": "Utilities Select Sector SPDR",
+      "category": "sector",
+      "ann_mean": 0.078246,
+      "ann_vol": 0.155554
+    },
+    "TLT": {
+      "name": "iShares 20+ Year Treasury Bond",
+      "category": "bonds",
+      "ann_mean": -0.020952,
+      "ann_vol": 0.137681
+    },
+    "LQD": {
+      "name": "iShares Investment Grade Corporate Bond",
+      "category": "bonds",
+      "ann_mean": 0.018845,
+      "ann_vol": 0.083554
+    },
+    "HYG": {
+      "name": "iShares High Yield Corporate Bond",
+      "category": "bonds",
+      "ann_mean": 0.039105,
+      "ann_vol": 0.077777
+    },
+    "GLD": {
+      "name": "SPDR Gold Shares",
+      "category": "commodities",
+      "ann_mean": 0.06793,
+      "ann_vol": 0.137693
+    },
+    "USO": {
+      "name": "United States Oil Fund",
+      "category": "commodities",
+      "ann_mean": -0.06403,
+      "ann_vol": 0.444978
+    },
+    "EFA": {
+      "name": "iShares MSCI EAFE (developed ex-US)",
+      "category": "international",
+      "ann_mean": 0.050497,
+      "ann_vol": 0.15302
+    },
+    "EEM": {
+      "name": "iShares MSCI Emerging Markets",
+      "category": "international",
+      "ann_mean": 0.029257,
+      "ann_vol": 0.172643
+    },
+    "VNQ": {
+      "name": "Vanguard Real Estate (REIT)",
+      "category": "real-estate",
+      "ann_mean": 0.043082,
+      "ann_vol": 0.183524
+    },
+    "BTC-USD": {
+      "name": "Bitcoin",
+      "category": "crypto",
+      "ann_mean": 0.611387,
+      "ann_vol": 0.691166
+    }
+  }
+}

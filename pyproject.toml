@@ -1,0 +1,39 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/qaoa_portfolio"]
+
+[project]
+name = "qaoa-portfolio-optimization"
+version = "0.1.0"
+description = "Cardinality-constrained portfolio optimization with QAOA in Qiskit (Qollab x IonQ Hackathon 2026, Quantum Impact)."
+requires-python = ">=3.14,<3.15"
+dependencies = [
+    # Qollab runtime default is qiskit>=2.5.2,<3.0.0 on Python 3.14 + NumPy 2.x.
+    # Keep the same bounds locally so circuits compile identically.
+    "qiskit>=2.5.2,<3.0.0",
+    # Local simulator. Matches Qollab's PQCA library pin (qiskit_aer==0.17.2).
+    # Qollab provides Aer only via that Libraries entry; do NOT put this in
+    # Qollab requirements.txt unless the PQCA library is selected.
+    "qiskit-aer==0.17.2",
+    # Pyodide built-in on Qollab (NumPy, SciPy): do NOT list them in Qollab
+    # requirements.txt, they load on import. Needed locally.
+    "numpy>=1.26",
+    "scipy>=1.12",
+    # Pyodide-ported, Qollab-safe: pure/wheel builds exist, usable in main.py
+    # via requirements.txt. Pandas for data handling.
+    "pandas>=2.0",
+    # Data pull (Yahoo Finance chart API in scripts/pull_data.py, local-only:
+    # keep out of Qollab requirements.txt; the Qollab demo ships CSVs).
+    "requests>=2.31",
+    # Figure generation (local-only: the Qollab demo ships pre-rendered
+    # figures, keep out of Qollab requirements.txt).
+    "matplotlib>=3.8",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+]

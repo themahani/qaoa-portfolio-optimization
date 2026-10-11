@@ -1,0 +1,5 @@
+# Qollab runtime only (browser Pyodide). NumPy, SciPy and pandas ship with the
+# runtime or load on import: pinning them to other versions stops the run.
+# Local development uses pyproject.toml and uv instead.
+qiskit>=2.5.2,<3.0.0
+pandas>=2.0
